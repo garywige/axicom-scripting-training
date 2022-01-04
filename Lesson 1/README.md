@@ -34,3 +34,17 @@ Write-Output "=> Variable Addition 1.0 <="
 
 Once you have typed this in, go to the top of the VS Code window, click Run->Start Debugging. You should see "=> Variable Addition 1.0 <=" printed on the terminal output at the bottom of the window. Congratulations, your first line of working code! I could have ended the lesson here, but I think we can cram some more in.
 
+## Variables
+
+Before moving onto the next section of the script, I would like to introduce you to the **variable**. Insert the following at the top of the script before all other lines of text:
+
+```
+$title = "=> Variable Addition 1.0 <="
+```
+
+We are assigning the value of **"=> Variable Addition 1.0 <="** to the variable named ** $title **. Variables always begin with a '$' character and they should always be assigned a value before using to avoid errors. Replace the line of code under `# print the title` with the following:
+
+```
+Write-Output $title
+```
+Assigning your string literals at the top of the script like this makes them easier to edit later and saves you from having to sift through possibly hundreds of lines of code. You don't need to put all of your variables at the top, but you should at least put variables at the top that you think you are likely to want to edit later on. 
