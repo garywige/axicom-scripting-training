@@ -47,4 +47,29 @@ We are assigning the value of **"=> Variable Addition 1.0 <="** to the variable 
 ```
 Write-Output $title
 ```
-Assigning your string literals at the top of the script like this makes them easier to edit later and saves you from having to sift through possibly hundreds of lines of code. You don't need to put all of your variables at the top, but you should at least put variables at the top that you think you are likely to want to edit later on. 
+Assigning your string literals at the top of the script like this makes them easier to edit later and saves you from having to sift through possibly hundreds of lines of code. You don't need to put all of your variables at the top, but you should at least put variables at the top that you think you are likely to want to edit later on. Debug your app again to confirm that you get the same output in the terminal as before.
+
+## Read-Host
+
+Our next section is asking us to `# get value for x from user`. In order to get a value from the user, we need to use the `Read-Host` cmdlet to output a prompt and get the user's response after they hit the **Enter** key. We will then assign the input that the user provided to a new variable named "$x". Insert an empty line under `# get value for x from user` and insert the following text in the empty line:
+
+```
+$x = Read-Host "Please enter value for x"
+```
+
+With a single line of code, you have output "Please enter a value for x: " to the screen, grabbed what the user typed in prior to hitting **Enter**, and assigned that string to $x. For testing, insert the following line of code underneith:
+
+```
+Write-Output "x = $x"
+```
+And hit the Start Debugging button from the Run menu. You should see the value for $x printed in the terminal. Okay, now delete the last line of code that you added because that was just for testing. Later on, I will teach you a better method of outputting development information to the screen that the user doesn't need to see. For now, we'll keep things simple. 
+
+Let's now do the **same thing** for our next section. Go ahead and copy the code we used to assign to $x and paste that directly below `# get value for y from user`. Now, delete 'x' from that line and replace with 'y' so it reads like:
+
+```
+$y = Read-Host "Please enter value for y"
+```
+
+Now, I will use this opportunity to teach you about something that all programmers should strive for in their code: **minimizing code duplication**. I emphasized to you that we had to do the **same thing** for y that we are doing for x and even had you copy/paste your code into another section of your script because this is a recognizable pattern that you are going to want to watch out for. Okay, that's nice, but how do we resolve the duplicated code?
+
+## Functions
