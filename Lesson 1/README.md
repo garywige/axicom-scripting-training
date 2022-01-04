@@ -42,7 +42,7 @@ Before moving onto the next section of the script, I would like to introduce you
 $title = "=> Variable Addition 1.0 <="
 ```
 
-We are assigning the value of **"=> Variable Addition 1.0 <="** to the variable named ** $title **. Variables always begin with a '$' character and they should always be assigned a value before using to avoid errors. Replace the line of code under `# print the title` with the following:
+We are assigning the value of **"=> Variable Addition 1.0 <="** to the variable named **$title**. Variables always begin with a '$' character and they should always be assigned a value before using to avoid errors. Replace the line of code under `# print the title` with the following:
 
 ```
 Write-Output $title
