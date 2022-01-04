@@ -1,8 +1,18 @@
+$title = "=> Variable Addition 1.0 <="
+
 #functions
 function getValueFor($varname) {
-    $output = "Please enter value for " + $varname
-    return [int](Read-host $output)
+    return [int](Read-host "Please enter value for $varname")
 }
+
+function printWithPadding($content){
+    Write-Output ""
+    Write-Output $content
+    Write-Output ""
+}
+
+# print the title
+printWithPadding($title)
 
 # get value for X from user
 $x = getValueFor("x")
@@ -14,4 +24,4 @@ $y = getValueFor("y")
 $result = $x + $y
 
 # output result
-Write-Output "$x + $y = $result"
+printWithPadding("Result: $x + $y = $result")
