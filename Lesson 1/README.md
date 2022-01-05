@@ -129,7 +129,7 @@ printWithPadding("Result: $x + $y = $result")
 Click Start Debugging to see the results. Provide input for x and y and verify that the output is what you're expecting. Here's an example of what you should see:
 
 ```
-Result: 2 + 3 = 23"
+Result: 2 + 3 = 23
 ```
 
 That's not exactly what we were taught in our math class, was it? The issue is that the data assigned to $x and $y is of the **string** type. We need to make sure the type of the data is of type **int**, which is for whole number integers. A simple way to do this for this project is to attempt to convert the string data to an int using a **type cast**. A **cast** is kind of like a function under the hood. It accepts the data to the right of it as input, like a function variable, does some work on it, then spits it out and passes it to whatever's to the left of it. Edit the **getvalueFor** function like so:
@@ -155,4 +155,4 @@ Unexpected token 'Read-host' in expression or statement.
 
 In the error above, the top line of the error is referencing line **5 char:17**. The issue with our code should be somewhere around there. If you are using VS Code, you will see the line numbers to the left of your code. In my case above, this was me demonstrating what happens when the parenthesis are taken out of the **getValueFor** function. Adding the parenthesis back in fixes the issue.
 
-When you are ready for more PowerShell scripting, go ahead and go to [Lesson 2]("../Lesson 2/README.md")
+When you are ready for more PowerShell scripting, go ahead and go to [Lesson 2](./tree/main/Lesson%202)
