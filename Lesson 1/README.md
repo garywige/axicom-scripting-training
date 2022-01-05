@@ -155,4 +155,4 @@ Unexpected token 'Read-host' in expression or statement.
 
 In the error above, the top line of the error is referencing line **5 char:17**. The issue with our code should be somewhere around there. If you are using VS Code, you will see the line numbers to the left of your code. In my case above, this was me demonstrating what happens when the parenthesis are taken out of the **getValueFor** function. Adding the parenthesis back in fixes the issue.
 
-When you are ready for more PowerShell scripting, go ahead and go to [Lesson 2](./tree/main/Lesson%202)
+When you are ready for more PowerShell scripting, go ahead and go to [Lesson 2](../Lesson%202/README.md)
