@@ -1,6 +1,6 @@
 # Lesson 1
 
-For our first project, we will start by creating a simple app that adds two user-provided values together and presents the result back to the user. **End-Result.ps1** contains a working sample of what this lesson will guide you through. To start, please open the **Start-Here.ps1** file.
+For our first project, we will start by creating a simple app that adds two user-provided values together and presents the result back to the user. **End-Result.ps1** contains a working sample of what this lesson will guide you through. To start, please open the **Start-Here.ps1** file. If you don't already have it installed, please install [Visual Studio Code](https://code.visualstudio.com/download) on your PC now. Once installed, I recommend installing the **PowerShell** extension from the **Extensions** section of the app as that makes coding in PowerShell a little easier. Programmers need all the help they can get!
 
 ## Comments
 
