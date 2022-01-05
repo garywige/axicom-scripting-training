@@ -132,4 +132,25 @@ Click Start Debugging to see the results. Provide input for x and y and verify t
 Result: 2 + 3 = 23"
 ```
 
-That's not exactly what we were taught in our math class, was it? The issue is that the data assigned to $x and $y is of the **string** type. We need to make sure the type of the data is of type **int**, which is for whole number integers. 
+That's not exactly what we were taught in our math class, was it? The issue is that the data assigned to $x and $y is of the **string** type. We need to make sure the type of the data is of type **int**, which is for whole number integers. A simple way to do this for this project is to attempt to convert the string data to an int using a **type cast**. A **cast** is kind of like a function under the hood. It accepts the data to the right of it as input, like a function variable, does some work on it, then spits it out and passes it to whatever's to the left of it. Edit the **getvalueFor** function like so:
+
+```
+function getValuefor($varname){
+    return [int](Read-host "Please enter value for $varname")
+}
+```
+
+Our int cast is written as `[int]` and we have enclosed the text to the right of it in parenthesis. If you try to execute the code without the parenthesis, it will print a read error about "Unexpected token". Sometimes, you need to use parenthesis to make it clear to the scripting engine what your intentions are. Parenthesis in programming are used just like they're used in algebra. The code in the parenthesis gets executed first before any code out of the parenthesis is executed. You can even nest parenthesis if you have a line of code that needs it. Don't forget to keep your code readable though, your future self will thank you.
+
+With that, go ahead and hit Start Debugging again and verify that the output is what you think it should be. If it looks like it would satisfy your 8th grade math teacher, we can call this one done. If you are getting errors, don't panic. The red output of the error should look something like this:
+
+```
+At C:\Projects\axicom-scripting-training\Lesson 1\End-Result.ps1:5 char:17
++     return [int]Read-host "Please enter value for $varname"
++                 ~~~~~~~~~
+Unexpected token 'Read-host' in expression or statement.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : UnexpectedToken
+```
+
+In the error above, the top line of the error is referencing line **5 char:17**. The issue with our code should be somewhere around there. If you are using VS Code, you will see the line numbers to the left of your code. In my case above, this was me demonstrating what happens when the parenthesis are taken out of the **getValueFor** function. Adding the parenthesis back in fixes the issue.
