@@ -1,3 +1,3 @@
-# axicom-scripting-training
- 
-These scripts are to be used for learning PowerShell. Each script introduces a collection of new topics on top of the previous script. If you are new to PowerShell, please open the [README.md file in the Lesson 1 folder](./Lesson%201) to get started.
+# PowerShell Scripting
+
+This project is an attempt at teaching a programming novice how to code using PowerShell. PowerShell is an excellent scripting language to use on Windows. For small "console" apps that don't require a fancy GUI, there's a good chance that PowerShell can do what you need it to. If you are new to PowerShell and interested in learning it, please open the [README.md file in the Lesson 1 folder](./Lesson%201) to get started.
