@@ -73,3 +73,63 @@ $y = Read-Host "Please enter value for y"
 Now, I will use this opportunity to teach you about something that all programmers should strive for in their code: **minimizing code duplication**. I emphasized to you that we had to do the **same thing** for y that we are doing for x and even had you copy/paste your code into another section of your script because this is a recognizable pattern that you are going to want to watch out for. Okay, that's nice, but how do we resolve the duplicated code?
 
 ## Functions
+
+Let's add a new section below our $title variable assignment at the top:
+
+```
+# functions
+```
+
+Underneith that line, enter the following:
+
+```
+function getValueFor($varname){
+    return Read-Host "Please enter value for $varname"
+}
+```
+
+Now, replace the line that assigs $x with the following:
+
+```
+$x = getValueFor("x")
+```
+
+And let's do the same for $y:
+
+```
+$y = getValueFor("y")
+```
+
+You may debug your script to confirm that it functions like you expect it to. We have replaced the code with a function named **getValueFor**. While we didn't really save ourselves any typing here, if we need to make any edits to how $x and $y are assigned, we can make that edit for both variables in one place. We will make such an edit later. While we're at it, let's create another function below the one we just created:
+
+```
+function printWithPadding($content){
+    Write-Output ""
+    Write-Output $content
+    Write-Output ""
+}
+```
+
+And replace the line of `Write-Output $title` with `printWithPadding($title)`. Debug to confirm everything is working correctly so far. Now, you probably get the gist of how this works, but let me explain it a little. The code units under the `# functions` section are called **function declarations** and they are where you can give functions a name, like **getValueFor**, give their variables a name between the parenthesis, like **$varname**, and define what the function does between the curly braces. As you can see, we use the **return** keyword to send the output of the **Read-Host** cmdlet back to the user (which is the programmer in this context). Not every function needs to return a value, and we demonstrate that with our **printWithPadding** function. Functions can also have multiple variables seperated by commas, like `functionName($var1, $var2, $var3){return "$var1 $var2 $var3"}`. Also, the previous sentence demonstrates that you could put the whole function on one line **if you really wanted to**. You should avoid doing that in practice because it makes your code hard to read by other programmers. Programmers like conventions. If you ever have the pleasure of sifting through a script you wrote years ago, or having to help another coder with their project, it makes it a lot easier when what you're reading follows a format that you're used to. Don't worry about getting it perfect right off the bat though. It's important at first for you to familiarize yourself with the available tools, and for you to know the appropriate setting in which those tools should be used. Making your code pretty takes time & practice, just like anything.
+
+# Casting
+
+Okay, so the rest of the script should be a breeze at this point, right? It should, but you will learn not to get your hopes up too high as a coder! Let's insert this code underneith `# do business logic`:
+
+```
+$result = $x + $y
+```
+
+We are adding $x and $y together and assigning the result to $result. Operators like '+' can work on variables depending on their underlying **type** . We are expecting our variables $x and $y to be a number type, but is that really the case? Let's output the result to find out. Enter the following underneith `# output result`:
+
+```
+printWithPadding("Result: $x + $y = $result")
+```
+
+Click Start Debugging to see the results. Provide input for x and y and verify that the output is what you're expecting. Here's an example of what you should see:
+
+```
+Result: 2 + 3 = 23"
+```
+
+That's not exactly what we were taught in our math class, was it? The issue is that the data assigned to $x and $y is of the **string** type. We need to make sure the type of the data is of type **int**, which is for whole number integers. 
