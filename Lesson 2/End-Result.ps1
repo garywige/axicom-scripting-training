@@ -2,7 +2,7 @@
 # - teach the value of reusable code by producing a library
 
 # VARIABLES
-$DebugPreference = 'SilentlyContinue' #'Continue'
+$DebugPreference = 'Continue' #'Continue'
 
 $Operation = 0
 $result = -1
@@ -39,15 +39,15 @@ printWithPadding($title)
 # prompt user for desired operation
 Write-Output "Supported Operations: Addition, Subtraction, Multiplication, Division"
 while($true){
-    $in = Read-Host "Please enter which operation to perform"
 
     try {
-        $Operation = [Operation]$in
-        $break
-
+        $Operation = [Operation](Read-Host "Please enter which operation to perform")
     } catch{
         Write-Output "Please enter one of the 4 options: Addition, Subtraction, Multiplication, Division"
+        continue
     }
+
+    break
 }
 Write-Debug "Operation = $Operation"
 
