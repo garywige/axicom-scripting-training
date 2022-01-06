@@ -2,10 +2,8 @@
 # - teach the value of reusable code by producing a library
 
 # VARIABLES
-$DebugPreference = 'Continue' #'Continue'
+$DebugPreference = 'Continue' #'SilentlyContinue' to turn off debugging
 
-$Operation = 0
-$result = -1
 $title = "<<< PowerShell Calculator v1.0 >>>"
 
 # TOOLBOX
@@ -16,14 +14,30 @@ enum Operation {
     Division
 }
 
-function getValueFor($varname) {
+function infiniteLoop($callback){
     while($true){
-        try{
-            return [int]::Parse((Read-host "Please enter value for $varname"))
-        } catch {
-            # don't need to do anything other than repeat
+        try {
+            $out = &$callback
+        } catch {           
+
+            continue
         }
+
+        break
     }
+
+    return $out
+}
+
+function getValueFor($varname) {
+
+    $out = infiniteLoop({
+        return [int]::Parse((Read-Host "Please enter value for $varname"))
+    })
+
+    Write-Debug "$varname = $out, type = $($out.GetType().Name)"
+
+    return $out
 }
 
 function printWithPadding($content){
@@ -37,27 +51,17 @@ function printWithPadding($content){
 printWithPadding($title)
 
 # prompt user for desired operation
-Write-Output "Supported Operations: Addition, Subtraction, Multiplication, Division"
-while($true){
+$Operation = infiniteLoop({
+    [Operation](Read-Host "Addition, Subtraction, Multiplication, or Division")
+})
 
-    try {
-        $Operation = [Operation](Read-Host "Please enter which operation to perform")
-    } catch{
-        Write-Output "Please enter one of the 4 options: Addition, Subtraction, Multiplication, Division"
-        continue
-    }
-
-    break
-}
 Write-Debug "Operation = $Operation"
 
 # get value for x
 $x = getValueFor("x")
-Write-Debug "x = $x"
 
 # get value for y
 $y = getValueFor("y")
-Write-Debug "y = $y"
 
 # do business logic
 switch($Operation){
