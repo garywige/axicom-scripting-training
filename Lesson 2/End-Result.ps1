@@ -1,10 +1,11 @@
-﻿# VARIABLES
+﻿# Goals:
+# - teach the value of reusable code by producing a library
+
+# VARIABLES
 $DebugPreference = 'SilentlyContinue' #'Continue'
 
-$isValid = $false
 $Operation = 0
 $result = -1
-$opString = ""
 $title = "<<< PowerShell Calculator v1.0 >>>"
 
 # TOOLBOX
@@ -25,20 +26,24 @@ function getValueFor($varname) {
     }
 }
 
+function printWithPadding($content){
+    Write-Output ""
+    Write-Output $content
+    Write-Output ""
+}
+
 # PROGRAM LOGIC
 # print title
-Write-Output ""
-Write-Output $title
-Write-Output ""
+printWithPadding($title)
 
 # prompt user for desired operation
 Write-Output "Supported Operations: Addition, Subtraction, Multiplication, Division"
-while($isValid -eq $false){
-    $input = Read-Host "Please enter which operation to perform"
+while($true){
+    $in = Read-Host "Please enter which operation to perform"
 
     try {
-        $Operation = [Operation]$input
-        $isValid = $true
+        $Operation = [Operation]$in
+        $break
 
     } catch{
         Write-Output "Please enter one of the 4 options: Addition, Subtraction, Multiplication, Division"
@@ -47,11 +52,11 @@ while($isValid -eq $false){
 Write-Debug "Operation = $Operation"
 
 # get value for x
-[int]$x = getValueFor("x")
+$x = getValueFor("x")
 Write-Debug "x = $x"
 
 # get value for y
-[int]$y = getValueFor("y")
+$y = getValueFor("y")
 Write-Debug "y = $y"
 
 # do business logic
