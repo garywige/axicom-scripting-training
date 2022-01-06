@@ -77,9 +77,11 @@ switch($Operation){
         $result = $x / $y
         $opString = "/"
     }
+    default {
+        throw "only these operations are supported: addition, subtraction, multiplication, division."
+    }
 }
 Write-Debug "result = $result, opString = $opString"
 
 # output result
-Write-Output ""
-Write-Output "Result: $x $opString $y = $result"
+printWithPadding("Result: $x $opString $y = $result")
