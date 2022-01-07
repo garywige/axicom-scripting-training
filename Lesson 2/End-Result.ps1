@@ -1,7 +1,4 @@
-﻿# Goals:
-# - teach the value of reusable code by producing a library
-
-# VARIABLES
+﻿# VARIABLES
 $DebugPreference = 'Continue' #'SilentlyContinue' to turn off debugging
 
 $title = "<<< PowerShell Calculator v1.0 >>>"
