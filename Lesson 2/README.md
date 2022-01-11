@@ -23,3 +23,20 @@ Set-Location C:\MyScripts
 ```
 
 If you run that from the "Lesson 2" directory in a PowerShell window, it should attempt to execute the script. Note that if you try to run that from the GitHub project root directory with `".\Lesson 2\Calculator.ps1"` after you've dot sourced your library script, it's not going to work correctly. For this reason, you may not be able to break some scripts up into seperate files like the way we're doing here. That's okay, but I'd at least like you to know how to keep your code as organized as possible in case you decide to learn other programming languages that don't have such limitations.
+
+With that out of the way, go ahead and copy/paste these two methods from **Lesson 1** into your library script that you created:
+
+```
+function getValueFor($varname) {
+    return [int](Read-host "Please enter value for $varname")
+}
+
+function printWithPadding($content){
+    Write-Output ""
+    Write-Output $content
+    Write-Output ""
+}
+```
+
+Go ahead and create a title variable and print it to the screen like we did in **Lesson 1** using the **printWithPadding** function. I'll let you choose what to display for a title.
+
