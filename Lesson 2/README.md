@@ -56,4 +56,20 @@ What is a **boolean expression**? A **boolean expression** can either resolve to
 while($true){}
 ```
 
-This allows us to control the program flow with other tools that I'll show you in a moment. The thing you need to keep in mind when creating loops is that you always need to have a way out of the loop. We don't want this loop to be executed for ever, so the code between the curly braces needs to have a mechanism to **break** out of the code block.
+This allows us to control the program flow with other tools that I'll show you in a moment. The thing you need to keep in mind when creating loops is that you always need to have a way out of the loop. We don't want this loop to be executed forever, so the code between the curly braces needs to have a mechanism to **break** out of the code block. We're going to do that using the `break` statement. Let's lay down some scaffolding first, though.
+
+## If Statements
+
+If we wanted to, we could use boolean expressions to test the user input before breaking the loop. Let's go ahead and write some test code underneith `# prompt user for desired operation`:
+
+```
+while($true){
+    $userInput = Read-Host "Please enter 'y'"
+
+    if($userInput -eq "y"){
+        break
+    }
+}
+```
+
+After typing this in, go ahead and save and debug the code to try it out. It should infinitely keep asking you to press 'y' until you actually do it. `$userInput -eq "y"` is the PowerShell way of saying "userInput == 'y'" that you might see in other programming languages. You can find more boolean comparison operators [here](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_comparison_operators?view=powershell-7.2) if you are interested. We'll use more operators in later lessons.
