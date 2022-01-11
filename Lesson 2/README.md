@@ -10,7 +10,7 @@ To start, go ahead and create a new file in the same folder as the **Calculator.
 
 ## Executing PowerShell Scripts
 
-We've spent a good amount of time **writing** a script and even **debugging** the script from within VS Code, but if you are planning on using PowerShell scripts for a profession, then you'd better know how to properly execute them. Open up PowerShell on your PC and wait for the blinking cursor to be after what probably looks like "PS C:\Users\Sally>". That is your "current working directory" for this PowerShell session. If you want to change your current working directory to the location where your script is located, you can use this command, replacing the path with the file path where your script is located:
+We've spent a good amount of time **writing** a script and even **debugging** the script from within VS Code, but if you are planning on using PowerShell scripts for a profession, then you'd better know how to properly execute them. Open up PowerShell on your PC and wait for the blinking cursor to be after what probably looks like "PS C:\Users\Sally>". That is your **current working directory** for this PowerShell session. If you want to change your current working directory to the location where your script is located, you can use this command, replacing the path with the file path where your script is located:
 
 ```
 Set-Location C:\MyScripts
@@ -50,7 +50,7 @@ while(<boolean expression>){
 }
 ```
 
-What is a **boolean expression**? A **boolean expression** can either resolve to `$true` or to `$false`. We'll touch on boolean expressions in detail later. For now, I'd like you to focus on how a **while** loop works. If the boolean expression resolves to `$true`, then the code inside of the curly braces gets executed **1 more time**. Then the expression is analyzed to see if it's still true before running through the block of code. This gets executed until the expression resolves to `$false`. We are going to create an **infinite loop** by making our while loop look like this:
+What is a **boolean expression**? A **boolean expression** can either resolve to `$true` or to `$false`. We'll touch on boolean expressions in detail later. For now, I'd like you to focus on how a **while** loop works. If the boolean expression resolves to `$true`, then the code inside of the curly braces gets executed **1 more time**. Then the expression is analyzed to see if it's still true before running through the block of code again. This gets executed until the expression resolves to `$false`. We are going to create an **infinite loop** by making our while loop look like this:
 
 ```
 while($true){}
