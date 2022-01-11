@@ -40,3 +40,20 @@ function printWithPadding($content){
 
 Go ahead and create a title variable and print it to the screen like we did in **Lesson 1** using the **printWithPadding** function. I'll let you choose what to display for a title.
 
+## While Loop
+
+Our next section charges us to `# prompt user for desired operation`. Like any good calculator app, we are going to let the user choose which mathematical operation they would like to perform. We're going to stick with the basic 4 for simplicity, though you can expand this if you want and do more complex operations. In this program, we would like to continue to ask the user for the correct input if they didn't put it in correctly. A simple way to do that is to use a "loop" and only break out of the loop when the user gets it right. There are several types of loops to choose from and each tends to be better for certain scenarios. The one that we'll use for this is the **while** loop. A typical while loop will have this overall layout:
+
+```
+while(<boolean expression>){
+    <work to be done>
+}
+```
+
+What is a **boolean expression**? A **boolean expression** can either resolve to `$true` or to `$false`. We'll touch on boolean expressions in detail later. For now, I'd like you to focus on how a **while** loop works. If the boolean expression resolves to `$true`, then the code inside of the curly braces gets executed **1 more time**. Then the expression is analyzed to see if it's still true before running through the block of code. This gets executed until the expression resolves to `$false`. We are going to create an **infinite loop** by making our while loop look like this:
+
+```
+while($true){}
+```
+
+This allows us to control the program flow with other tools that I'll show you in a moment. The thing you need to keep in mind when creating loops is that you always need to have a way out of the loop. We don't want this loop to be executed for ever, so the code between the curly braces needs to have a mechanism to **break** out of the code block.
