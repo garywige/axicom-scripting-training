@@ -2,15 +2,95 @@
 
 ## The Boolean Type
 
+There are going to be instances where you need to evaluate a variable and change your program flow accordingly. This will usually involve **boolean** values, which can either be `$true` or `$false`. Sometimes, testing the boolean value of a variable is sufficient, like `if($var)` (you will learn about if statements soon). Other times, you may need a more complex statement to evaluate, like `if(($var -ne $null)-and ($var.value -eq 360))`. 
+
+## Logical Operators
+
+Some boolean statements will require **logical operators**. If you are familiar with other programming languages, you should already be familiar with these, though they have a different syntax than what you are probably used to.
+
+### Logical AND
+
 ```
-$var = $true # $var is type boolean with a value of true
-$var = $false # $var is type boolean with a value of false
-1 -eq 1 # evaluates to $true
-1 -ne 1 # evaluates to $false
-1 -gt 0 # evaluates to $true
-1 -lt 0 # evaluates to $false
-!(1 -eq 1) # evaluates to $false
+$var1 = $true
+$var2 = $true
+$result = $var1 -and $var2 # result has the value $true
 ```
+
+The `-and` operator compares the statements on the left and right, then returns true only if both statements evaluate to true.
+
+### Logical OR
+
+```
+$var1 = $true
+$var2 = $false
+$result = $var1 -or $var2 # result has the value $true
+```
+
+The `-or` operator compares the boolean values on the left and right, then returns true if either of the statements evaluate to true. 
+
+### Logical NOT
+
+```
+$var1 = $false
+$result = !($var1) # result has the value true
+# you can also use this syntax
+$result = -not ($var1)
+```
+
+The `!` or `-not` operator will return the opposite boolean value of the statement to the right of the operator. If the statement evaluates to `$true`, `-not` will return `$false`. If the statement evaluates to `$false`, `-not` will return `$true`.
+
+PowerShell also has an **Exclusive OR** operator `-xor`, but I will refrain from using it to keep things simple.
+
+## Comparison Operators
+
+Often, we are going to want to compare a variable or statement to another variable or statement and use the results to control program flow. 
+
+### Equals
+
+```
+$var1 = 1
+$var2 = 2
+$result = $var1 -eq $var2 # result has the value $false
+```
+
+The `-eq` operator compares statements on the left/right and returns `$true` if the values match. Note that if they are of a different **type**, like the number value 32 and the string value '32', the values do not match and will return false if compared with this operator. 
+
+### Not Equals
+
+```
+$var1 = 1
+$var2 = 2
+$result = $var1 -ne $var2 # result has the value $true
+```
+
+The `-ne` operator compares statements on the left/right and returns `$true` if the values do not match. This is basically a shorthand for `!($var1 -eq $var2)`.
+
+### Greater Than
+
+```
+$var1 = 1
+$var2 = 2
+$result = $var1 -gt $var2 # result has the value $false
+```
+
+The `-gt` operator compares statements on the left/right and returns `$true` if the value on the left is greater than the value on the right. This can obviously be used with numbers, but you can also use it with strings. A good use case for using it with strings is for sorting. Any class that implements the **System.IComparable** interface can also work with comparison operators. Don't worry if you don't understand that last sentence.
+
+### Great Than or Equal
+
+```
+$result = 100 -ge 100 # result is $true
+```
+
+The `-ge` operator will return true if the left/right statements are equal or if the left statement is greater than the right statement. This could also be accomplished with a combination of `-or`, `-eq`, and `-gt` operators, but this is a much simpler way of making the same comparison.
+
+### Less Than
+
+```
+$result = 2 -lt 3 # result is true
+$result = 100 -le 100 # result is true
+```
+
+As you may have guessed, the `-lt` operator compares the left/right statements and returns true if the statement on the left is less than the statement on the right. There is also a corresponding `-le` operator that also looks for equality.
 
 ## If Statement
 
