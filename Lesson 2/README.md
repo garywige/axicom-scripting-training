@@ -175,7 +175,7 @@ while(<statement>){
 }
 ```
 
-or
+Sometimes, it's necessary to repeat a block of code. A **while loop** will evaluate the statement in the parenthesis and execute the code if it's true, just like an **if statement**. Once the block is done, it evaluates the statement again and executes it if the statement is still true. Here is a useful variation you may want to use sometimes:
 
 ```
 do {
@@ -183,13 +183,31 @@ do {
 } while(<statement>)
 ```
 
+The **do/while loop** will always execute the block of code at least once because the conditional statement isn't examined until the end of the code block is reached.
+
 ## for/foreach loops
+
+A **while loop** is great for when you want to use a boolean statement to control the flow, but you may want to use a different loop depending on the scenario.
+
+### For Loop
 
 ```
 for($i = 0; $i -lt 10; $i++){
     Write-Output $i
 }
 ```
+
+A **for loop** is a bit different than other structures you've seen so far. The code in between the parenthesis is broken down into 3 sections separated by semi-colons. The first section is used to initialize a varialbe that will be used for the other 2 sections. This typically looks like `$i = 0`. The second section is a boolean statement used to determine whether to continue execution. In most cicumstances, it will look like `$i -lt <number of iterations>`. The third section controls how the variable you created in the first section is incremented. Typically it will be incremented with the **increment operator** ++, like `$i++`, which will add 1 to the variable $i. **For loops** are great for when you need to use $i in the code block on each iteration. For insteance, you can create a numbered list like this:
+
+```
+for($i = 0; $i -lt 5; $i++){
+    Write-Output ("" + $i + ": " + $items[$i])
+}
+```
+
+$items is an **array** and you will learn about those later. 
+
+### Foreach Loop
 
 ```
 $fruits = @("apple", "banana", "strawberry")
