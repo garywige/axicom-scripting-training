@@ -100,6 +100,8 @@ if(<boolean statement is true>){
 }
 ```
 
+Finally, we can put these operators to work! An **if statement** evaluates the expression in the parenthesis. If the statement is true, the block of code in between the curly braces is executed.
+
 ## Else Statement
 
 ```
@@ -119,6 +121,8 @@ if(<statement>) {
 }
 ```
 
+**Else statements** can only be used in conjunction with **if statements**. If the statement in the if statement evaluates to `$false`, the code block after the **else statement** is executed. Note that an **else statement** can execute another **if statement**, so you can chain if statements together like this if you have several comparisons to make. However, often times you will want to use a **switch statement** instead of chaining multiple **if statements** together.
+
 ## Switch Statement
 
 ```
@@ -128,6 +132,40 @@ switch(<statement>){
     default { <do this if nothing else matched> }
 }
 ```
+
+A **switch statement** can be used to compare a variable with multiple values. Let's say you have the user select what program mode they want to use:
+
+```
+$mode = Read-Host "1) Addition, 2) Subtraction, 3) Multiplication, 4) Division"
+```
+
+You can then use a switch statement to take the appropriate action
+
+```
+switch($mode){
+    "1" {
+        $result = $var1 + $var2
+    }
+
+    "2" {
+        $result = $var1 - $var2
+    }
+
+    "3" {
+        $result = $var1 * $var2
+    }
+
+    "4" {
+        $result = $var1 / $var2 # usually want to verify that $var2 isn't 0 first
+    }
+
+    default {
+        $result = "not supported"
+    }
+}
+```
+
+You can use the `default {}` block to catch any values that weren't matched. 
 
 ## While Loops
 
