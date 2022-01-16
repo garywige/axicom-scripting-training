@@ -197,11 +197,11 @@ for($i = 0; $i -lt 10; $i++){
 }
 ```
 
-A **for loop** is a bit different than other structures you've seen so far. The code in between the parenthesis is broken down into 3 sections separated by semi-colons. The first section is used to initialize a varialbe that will be used for the other 2 sections. This typically looks like `$i = 0`. The second section is a boolean statement used to determine whether to continue execution. In most cicumstances, it will look like `$i -lt <number of iterations>`. The third section controls how the variable you created in the first section is incremented. Typically it will be incremented with the **increment operator** ++, like `$i++`, which will add 1 to the variable $i. **For loops** are great for when you need to use $i in the code block on each iteration. For insteance, you can create a numbered list like this:
+A **for loop** is a bit different than other structures you've seen so far. The code in between the parenthesis is broken down into 3 sections separated by semi-colons. The first section is used to initialize a varialbe that will be used for the other 2 sections. This typically looks like `$i = 0`. The second section is a boolean statement used to determine whether to continue execution, similar to a **while loop**. In most cicumstances, it will look something like `$i -lt <number of iterations>`. The third section controls how the variable you created in the first section is incremented. Typically it will be incremented with the **increment operator** ++, for instance `$i++`, which will add 1 to the variable $i. **For loops** are great for when you need to use $i in the code block on each iteration. For instance, you can create a numbered list like this:
 
 ```
-for($i = 0; $i -lt 5; $i++){
-    Write-Output ("" + $i + ": " + $items[$i])
+for($i = 0; $i -lt $items.count; $i++){
+    Write-Output "$($i): $($items[$i])"
 }
 ```
 
@@ -216,6 +216,8 @@ foreach($fruit in $fruits){
     Write-Output "My favorite fruit is $fruit.
 }
 ```
+
+**Foreach loops** are great for iterating over arrays when you don't need to keep track of which iteration you are on. In the code example above, an array is instantiated named $fruits containing 3 members. The **foreach loop** creates a temporary variable for each iteration named $fruit that can be used for the code block. We will go over arrays in detail in another lesson. 
 
 ## break/continue
 
