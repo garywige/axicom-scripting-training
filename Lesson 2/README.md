@@ -213,7 +213,7 @@ $items is an **array** and you will learn about those later.
 $fruits = @("apple", "banana", "strawberry")
 
 foreach($fruit in $fruits){
-    Write-Output "My favorite fruit is $fruit.
+    Write-Output "My favorite fruit is $fruit."
 }
 ```
 
