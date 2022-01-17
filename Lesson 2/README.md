@@ -236,6 +236,10 @@ while($true){
 }
 ```
 
+Sometimes, you want a way to change the program flow within a loop. The **break** keyword causes the loop to immediately end execution and anything after the loop's code block is then executed. In the loop above, we have created something called an **infinite loop**, so called because the loop can never end if only for its boolean statement `while($true){}`. In that scenario, a **break** is the only way you can end the loop.
+
+The **continue** keyword is also useful for loops. When **continue** is encountered, the rest of the code block is skipped and the boolean statement is evaluated before starting the next round. 
+
 ## try/catch
 
 ```
@@ -243,7 +247,18 @@ try {
     <potentially buggy/dangerous code>
 } catch {
     <do something to handle the error if it happens>
+    Write-Output $_
 }
 ```
+
+If you enter bad input into the Lesson 1 example script, the script doesn't **handle** it very well. For a small script with limited budget, this is fine. But, sometimes it makes sense to put the extra work in to make the script overcome the errors it may encounter. You may surround your potentially buggy code in a **try** block like above. The **catch** block right below it defines what action will be taken when an error is encountered. You may need to print a custom message to the script, instantiate variables with default values to avoid future errors, etc. If this is in a loop, maybe just **continue** will suffice so the user can try reentering their input. The `$_` in the example above is called the **$PSItem** variable and it will contain the last error message encountered.
+
+What if you want to throw your own errors? All you have to do is use the **throw** keyword suffixed by your error text like so:
+
+```
+throw "I have no idea what I'm doing..."
+```
+
+This will cause code execution to halt and the error will bubble up to the first catch block that it encounters. If no catch block is encountered, the program ends with an unhandled exception and the error is written to the screen.
 
 ## Conclusion
