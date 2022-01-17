@@ -19,36 +19,38 @@ Some boolean statements will require **logical operators**. If you are familiar 
 
 ### Logical AND
 
-```
-$var1 = $true
-$var2 = $true
-$result = $var1 -and $var2 # result has the value $true
-```
-
 The `-and` operator compares the statements on the left and right, then returns true only if both statements evaluate to true.
+
+```
+Write-Output ($false -and $false)
+Write-Output ($true -and $false)
+Write-Output ($false -and $true)
+Write-Output ($true -and $true) # we have a winner
+```
 
 ### Logical OR
 
-```
-$var1 = $true
-$var2 = $false
-$result = $var1 -or $var2 # result has the value $true
-```
+The `-or` operator compares the boolean values on the left and right, then returns true if either of the statements evaluate to true.
 
-The `-or` operator compares the boolean values on the left and right, then returns true if either of the statements evaluate to true. 
+```
+Write-Output ($false -or $false) # only this is false
+Write-Output ($false -or $true)
+Write-Output ($true -or $false)
+Write-Output ($true -or $true)
+``` 
 
 ### Logical NOT
-
-```
-$var1 = $false
-$result = !($var1) # result has the value true
-# you can also use this syntax
-$result = -not ($var1)
-```
 
 The `!` or `-not` operator will return the opposite boolean value of the statement to the right of the operator. If the statement evaluates to `$true`, `-not` will return `$false`. If the statement evaluates to `$false`, `-not` will return `$true`.
 
 PowerShell also has an **Exclusive OR** operator `-xor`, but I will refrain from using it to keep things simple.
+
+```
+Write-Output (!$true)
+Write-Output (!$false)
+Write-Output (-not $true)
+Write-Output (-not $false)
+```
 
 ## Comparison Operators
 
@@ -56,95 +58,113 @@ Often, we are going to want to compare a variable or statement to another variab
 
 ### Equals
 
-```
-$var1 = 1
-$var2 = 2
-$result = $var1 -eq $var2 # result has the value $false
-```
-
 The `-eq` operator compares statements on the left/right and returns `$true` if the values match. Note that if they are of a different **type**, like the number value 32 and the string value '32', the values do not match and will return false if compared with this operator. 
+
+Something important to note about using this with strings is that it is case-insensitive by default. This differs from most other programming languages, so watch out. If you need to compare the case in strings, use `-ceq` instead.
+
+```
+Write-Output (1 -eq 2) #false
+Write-Output (1 -eq 1) #true
+Write-Output ("banana" -eq "orange") #false
+Write-Output ("Banana" -eq "banana") #true
+Write-Output ("Banana" -ceq "banana") #false
+```
 
 ### Not Equals
 
-```
-$var1 = 1
-$var2 = 2
-$result = $var1 -ne $var2 # result has the value $true
-```
-
 The `-ne` operator compares statements on the left/right and returns `$true` if the values do not match. This is basically a shorthand for `!($var1 -eq $var2)`.
+
+```
+Write-Output (1 -ne 2) #true
+Write-Output (1 -ne 1) #false
+Write-Output ("banana" -ne "orange") #true
+Write-Output ("Banana" -ne "banana") #false
+Write-Output ("Banana" -cne "banana") #true
+```
 
 ### Greater Than
 
-```
-$var1 = 1
-$var2 = 2
-$result = $var1 -gt $var2 # result has the value $false
-```
-
 The `-gt` operator compares statements on the left/right and returns `$true` if the value on the left is greater than the value on the right. This can obviously be used with numbers, but you can also use it with strings. A good use case for using it with strings is for sorting. Any class that implements the **System.IComparable** interface can also work with comparison operators. Don't worry if you don't understand that last sentence.
+
+```
+Write-Output (1 -gt 2) #false
+Write-Output (2 -gt 1) #true
+Write-Output (1 -gt 1) #false
+Write-Output ("apple" -gt "banana") #false because 'a' comes before 'b'
+```
 
 ### Great Than or Equal
 
-```
-$result = 100 -ge 100 # result is $true
-```
+The `-ge` operator will return true if the left/right statements are equal or if the left statement is greater than the right statement. This could also be accomplished with a combination of `-or`, `-eq`, and `-gt` operators, but this is a much simpler way of making the same comparison. For extra credit, I challenge you to figure how how you could do the same thing using the 3 operators mentioned.
 
-The `-ge` operator will return true if the left/right statements are equal or if the left statement is greater than the right statement. This could also be accomplished with a combination of `-or`, `-eq`, and `-gt` operators, but this is a much simpler way of making the same comparison.
+```
+Write-Output (1 -ge 2) #false
+Write-Output (2 -ge 1) #true
+Write-Output (1 -ge 1) #true because they are equal
+Write-Output ("apple" -ge "banana") #false because 'a' comes before 'b'
+```
 
 ### Less Than
 
-```
-$result = 2 -lt 3 # result is true
-$result = 100 -le 100 # result is true
-```
-
 As you may have guessed, the `-lt` operator compares the left/right statements and returns true if the statement on the left is less than the statement on the right. There is also a corresponding `-le` operator that also looks for equality.
+
+```
+Write-Output (1 -lt 2) #true
+Write-Output (2 -lt 1) #false
+Write-Output (1 -lt 1) #false
+Write-Output ("apple" -lt "banana") #true because 'a' comes before 'b'
+
+Write-Output (1 -le 2) #true
+Write-Output (2 -le 1) #false
+Write-Output (1 -le 1) #true because they are equal
+Write-Output ("apple" -le "banana") #true because 'a' comes before 'b'
+```
 
 ## If Statement
 
+Finally, we can put these operators to work! An **if statement** evaluates the expression in the parenthesis. If the statement is true, the block of code in between the curly braces is executed.
+
 ```
-if(<boolean statement is true>){
-    <do this work>
+if($true){
+    Write-Output "This gets printed to the screen"
+}
+
+if($false){
+    Write-Output "This does not get printed :P"
 }
 ```
-
-Finally, we can put these operators to work! An **if statement** evaluates the expression in the parenthesis. If the statement is true, the block of code in between the curly braces is executed.
 
 ## Else Statement
 
+**Else statements** can only be used in conjunction with **if statements**. If the statement in the if statement evaluates to `$false`, the code block after the **else statement** is executed. Note that you can use the keyword **elseif** to chain if statements together like this if you have several comparisons to make. However, often times you will want to use a **switch statement** instead of chaining multiple **if statements** together.
+
 ```
-if(<boolean statement is true>){
-    <do this work>
+$motivationLevel = 1
+
+if($motivationLevel -gt 5){
+    Write-Output "I'm really motivated right now"
 } else {
-    <do this work instead>
+    Write-Output "I'm going back to bed..."
 }
 
 # chained if statements
-if(<statement>) {
-
-} else if(<another statement>) {
-
+if($motivationLevel -lt 2) {
+    Write-Output "back to bed"
+} elseif($motivationLevel -lt 5) {
+    Write-Output "but I'm still in my pajamas..."
 } else {
-
+    Write-Output "I'm ready to rock!"
 }
 ```
 
-**Else statements** can only be used in conjunction with **if statements**. If the statement in the if statement evaluates to `$false`, the code block after the **else statement** is executed. Note that an **else statement** can execute another **if statement**, so you can chain if statements together like this if you have several comparisons to make. However, often times you will want to use a **switch statement** instead of chaining multiple **if statements** together.
 
 ## Switch Statement
-
-```
-switch(<statement>){
-    <value 1> { <do this work if statement is equal to value 1>}
-    <value 2> { <do this work if statement is equal to value 2>}
-    default { <do this if nothing else matched> }
-}
-```
 
 A **switch statement** can be used to compare a variable with multiple values. Let's say you have the user select what program mode they want to use:
 
 ```
+$var1 = 3
+$var2 = 7
 $mode = Read-Host "1) Addition, 2) Subtraction, 3) Multiplication, 4) Division"
 ```
 
@@ -172,24 +192,35 @@ switch($mode){
         $result = "not supported"
     }
 }
+
+Write-Output "Result: $result"
 ```
 
 You can use the `default {}` block to catch any values that weren't matched. 
 
 ## While Loops
 
+Sometimes, it's necessary to repeat a block of code. A **while loop** will evaluate the statement in the parenthesis and execute the code if it's true, just like an **if statement**. Once the block is done, it evaluates the statement again and executes it if the statement is still true.
+
 ```
-while(<statement>){
-    <do this work>
+$i = 0
+while($i -lt 100){
+    Write-Output "$i little monkeys jumping on the bed!"
+    $i++
 }
 ```
 
-Sometimes, it's necessary to repeat a block of code. A **while loop** will evaluate the statement in the parenthesis and execute the code if it's true, just like an **if statement**. Once the block is done, it evaluates the statement again and executes it if the statement is still true. Here is a useful variation you may want to use sometimes:
+Here is a useful variation you may want to use sometimes:
 
 ```
+$superSecretPassword = "password"
+
+Write-Output "\tSUPER-SECURE LOGIN"
+Write-Output "the password is '$superSecretPassword'"
+
 do {
-    <do this work at least once>
-} while(<statement>)
+    $pw = Read-Host "Please enter the password"
+} while($pw -ne $superSecretPassword)
 ```
 
 The **do/while loop** will always execute the block of code at least once because the conditional statement isn't examined until the end of the code block is reached.
@@ -200,23 +231,29 @@ A **while loop** is great for when you want to use a boolean statement to contro
 
 ### For Loop
 
+A **for loop** is a bit different than other structures you've seen so far. The code in between the parenthesis is broken down into 3 sections separated by semi-colons. 
+
 ```
 for($i = 0; $i -lt 10; $i++){
     Write-Output $i
 }
 ```
 
-A **for loop** is a bit different than other structures you've seen so far. The code in between the parenthesis is broken down into 3 sections separated by semi-colons. The first section is used to initialize a varialbe that will be used for the other 2 sections. This typically looks like `$i = 0`. The second section is a boolean statement used to determine whether to continue execution, similar to a **while loop**. In most cicumstances, it will look something like `$i -lt <number of iterations>`. The third section controls how the variable you created in the first section is incremented. Typically it will be incremented with the **increment operator** ++, for instance `$i++`, which will add 1 to the variable $i. **For loops** are great for when you need to use $i in the code block on each iteration. For instance, you can create a numbered list like this:
+The first section is used to initialize a varialbe that will be used for the other 2 sections. This typically looks like `$i = 0`. The second section is a boolean statement used to determine whether to continue execution, similar to a **while loop**. In most cicumstances, it will look something like `$i -lt <number of iterations>`. The third section controls how the variable you created in the first section is incremented. Typically it will be incremented with the **increment operator** ++, for instance `$i++`, which will add 1 to the variable $i. **For loops** are great for when you need to use $i in the code block on each iteration. For instance, you can create a numbered list like this:
 
 ```
-for($i = 0; $i -lt $items.count; $i++){
-    Write-Output "$($i): $($items[$i])"
+$fruits = @("apple", "banana", "coconut", "avocado", "cherry", "mango", "tomato", "jalapeno", "bell pepper")
+
+for($i = 0; $i -lt $fruits.count; $i++){
+    Write-Output "$($i): $($fruits[$i])"
 }
 ```
 
-$items is an **array** and you will learn about those later. 
+$fruits is an **array** and you will learn about those in detail in another lesson. For now, you now know enough to instanteate your own for practice. 
 
 ### Foreach Loop
+
+**Foreach loops** are great for iterating over arrays when you don't need to keep track of which iteration you are on. In the code example below, an array is instantiated named $fruits containing 3 members. The **foreach loop** creates a temporary variable for each iteration named $fruit that can be used for the code block. We will go over arrays in detail in another lesson. 
 
 ```
 $fruits = @("apple", "banana", "strawberry")
@@ -226,17 +263,20 @@ foreach($fruit in $fruits){
 }
 ```
 
-**Foreach loops** are great for iterating over arrays when you don't need to keep track of which iteration you are on. In the code example above, an array is instantiated named $fruits containing 3 members. The **foreach loop** creates a temporary variable for each iteration named $fruit that can be used for the code block. We will go over arrays in detail in another lesson. 
-
 ## break/continue
 
+Sometimes, you want a way to change the program flow *within* a loop.
+
 ```
+$i = 0
 while($true){
     # oh no, infitite loop!
 
-    if(<statement>){
+    if(++$i -gt 100){
+        Write-Output "stopping..."
         break
     } else {
+        Write-Output "Error: stopping when 'i' is less than 100 is not supported! (i == $i)"
         continue
     }
 
@@ -245,22 +285,28 @@ while($true){
 }
 ```
 
-Sometimes, you want a way to change the program flow within a loop. The **break** keyword causes the loop to immediately end execution and anything after the loop's code block is then executed. In the loop above, we have created something called an **infinite loop**, so called because the loop can never end if only for its boolean statement `while($true){}`. In that scenario, a **break** is the only way you can end the loop.
+The **break** keyword causes the loop to immediately end execution and anything after the loop's code block is then executed. In the loop above, we have created something called an **infinite loop**, so called because the loop can never end if only for its boolean statement `while($true){}`. In that scenario, a **break** or **return** statement is the only way you can end the loop.
 
-The **continue** keyword is also useful for loops. When **continue** is encountered, the rest of the code block is skipped and the boolean statement is evaluated before starting the next round. 
+The **continue** keyword is also useful for loops. When **continue** is encountered, the rest of the code block is skipped and the boolean statement is evaluated before starting the next round. Because of the **continue** keyword in the example above, the word "Help!" is never written to the screen.
 
 ## try/catch
 
+If you enter bad input into the Lesson 1 example script, the script doesn't **handle** it very well. For a small script with limited budget, this is fine. But, sometimes it makes sense to put the extra work in to make the script overcome the errors it may encounter.
+
 ```
-try {
-    <potentially buggy/dangerous code>
-} catch {
-    <do something to handle the error if it happens>
-    Write-Output $_
+while($true){
+    try {
+        $num = [int](Read-Host "Enter a number")
+    } catch {
+        Write-Output $_
+        continue
+    }
+
+    break
 }
 ```
 
-If you enter bad input into the Lesson 1 example script, the script doesn't **handle** it very well. For a small script with limited budget, this is fine. But, sometimes it makes sense to put the extra work in to make the script overcome the errors it may encounter. You may surround your potentially buggy code in a **try** block like above. The **catch** block right below it defines what action will be taken when an error is encountered. You may need to print a custom message to the script, instantiate variables with default values to avoid future errors, etc. If this is in a loop, maybe just **continue** will suffice so the user can try reentering their input. The `$_` in the example above is called the **$PSItem** variable and it will contain the last error message encountered.
+You may surround your potentially buggy code in a **try** block like above. The **catch** block right below it defines what action will be taken when an error is encountered. You may need to print a custom message to the script, instantiate variables with default values to avoid future errors, etc. If this is in a loop, maybe just **continue** will suffice so the user can try reentering their input. The `$_` in the example above is called the **$PSItem** variable and it will contain the last error message encountered.
 
 What if you want to throw your own errors? All you have to do is use the **throw** keyword suffixed by your error text like so:
 
@@ -268,6 +314,8 @@ What if you want to throw your own errors? All you have to do is use the **throw
 throw "I have no idea what I'm doing..."
 ```
 
-This will cause code execution to halt and the error will bubble up to the first catch block that it encounters. If no catch block is encountered, the program ends with an unhandled exception and the error is written to the screen.
+This will cause code execution to halt and the error will bubble up to the first catch block that it encounters. If no catch block is encountered, the program ends with an unhandled exception and the error is written to the screen in red.
 
 ## Conclusion
+
+In this lesson, you learned many useful concepts that can help you write much more advanced scripts than the previous lesson. I encourage you to you experiement with what you've learned so far to solidify the knowledge. A great excercise would be to expand on the Lesson 1 example and create a calculator with 4 basic modes: addition, subtraction, multiplication, and division. I leave the implementation details up to you!
