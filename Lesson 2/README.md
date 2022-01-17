@@ -1,8 +1,17 @@
 # Lesson 2
 
+## Introduction
+
+In the previous lesson, the goal was to get you oriented with your scripting environment so you can begin experimenting. In this lesson, I'm going to focus more on the available scripting tools that PowerShell has to offer and prepare you for more advanced scripting projects. Instead of writing one large project script for this lesson, I would like you to open a PowerShell window that you can type or copy/paste the examples into. The PowerShell window is another valuable tool you can use when scripting. Sometimes you don't know if your syntax is right and testing something in a PowerShell window is a quick way to verify that you have it right before you commit it to your PS1 file.
+
 ## The Boolean Type
 
 There are going to be instances where you need to evaluate a variable and change your program flow accordingly. This will usually involve **boolean** values, which can either be `$true` or `$false`. Sometimes, testing the boolean value of a variable is sufficient, like `if($var)` (you will learn about if statements soon). Other times, you may need a more complex statement to evaluate, like `if(($var -ne $null)-and ($var.value -eq 360))`. 
+
+```
+$var1 = $true
+Write-Output "var1 is $var1"
+```
 
 ## Logical Operators
 
