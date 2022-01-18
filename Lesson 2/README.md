@@ -39,11 +39,11 @@ Write-Output ($true -or $false)
 Write-Output ($true -or $true)
 ``` 
 
+PowerShell also has an **Exclusive OR** operator `-xor`, but I will refrain from using it to keep things simple.
+
 ### Logical NOT
 
 The `!` or `-not` operator will return the opposite boolean value of the statement to the right of the operator. If the statement evaluates to `$true`, `-not` will return `$false`. If the statement evaluates to `$false`, `-not` will return `$true`.
-
-PowerShell also has an **Exclusive OR** operator `-xor`, but I will refrain from using it to keep things simple.
 
 ```
 Write-Output (!$true)
@@ -215,7 +215,7 @@ Here is a useful variation you may want to use sometimes:
 ```
 $superSecretPassword = "password"
 
-Write-Output "\tSUPER-SECURE LOGIN"
+Write-Output "SUPER-SECURE LOGIN"
 Write-Output "the password is '$superSecretPassword'"
 
 do {
