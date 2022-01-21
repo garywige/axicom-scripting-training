@@ -16,6 +16,8 @@ $title += "`t %%%%%%%%%%%%%%%%`r`n"
 $title += "`r`n"
 $title += "`t Powered by AXICOM"
 
+$script:filesCopied = 0
+
 enum Mode {
     OverwriteAll
     OverwriteNone
@@ -74,6 +76,12 @@ function isModeString([string]$str){
     }
 }
 
+function copyItem([string]$Source, [string]$Destination){
+    Write-Output "Copy item: $Source`r`n`tDestination: $Destination"
+    Copy-Item -Path $Source -Destination $Destination -Force
+    $script:filesCopied++
+}
+
 function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$Destination){
 
     # foreach item in source
@@ -82,19 +90,27 @@ function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$D
         # if item is file
         if($item.GetType().Name -eq "FileInfo"){
 
+            $itemPath = "$($Destination.FullName)\$($item.Name)"
+
             # copy depending on mode
             switch($Mode){
                 OverwriteAll {
-                    Write-Output "New item: $item"
-                    Copy-Item -Path $item.FullName -Destination $Destination -Force
+                    copyItem -Source $item.FullName -Destination $Destination
                 }
 
                 OverwriteNone {
-                    Write-Output "$item : Overwriting nothing!"
+                    if(Test-Path $itemPath ) {
+                        Write-Output "Skipping item: $($item.FullName)"
+                    } else {
+                        # copy the item
+                        copyItem -Source $item.FullName -Destination $Destination
+                    }
                 }
 
                 OverwriteOld {
-                    Write-Output "$item : Overwriting old stuff!"
+                    $itemNew = New-Object -TypeName "System.IO.FileInfo" -ArgumentList @($itemPath)
+                    
+                    if()
                 }
 
                 default {
@@ -161,4 +177,4 @@ copyItems -Source $Source -Destination $Destination
 
 # final output
 # TODO: implement file counter
-printPadding -str "Files copied successfully!" -padding 2
+printPadding -str "$script:filesCopied file(s) copied successfully!" -padding 2
