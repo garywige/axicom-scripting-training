@@ -161,21 +161,17 @@ while($Destination -eq "" -or !(dirExists $Destination)) {
 printPadding "Destination:`r`n`t$Destination"
 
 # prompt for copy mode (if not specified by argument)
+Write-Output "Modes: OverwriteAll, OverwriteNone, OverwriteOld"
 
-if($Mode -eq "" -or !(isModeString $Mode)) {
-    # prompt
-    Write-Output "Modes: OverwriteAll, OverwriteNone, OverwriteOld"
-    $Mode = ""
-
-    while($Mode -eq ""){
-        try{
-            $Mode = [Mode](Read-Host "Please enter mode")
-        } catch {
-            # do nothing
-        }
+while($Mode -eq "" -or !(isModeString $Mode)) {
+    try{
+        $Mode = [Mode](Read-Host "Please enter mode")
+    } catch {
+        # do nothing
     }
 } 
 
+# cast to Mode incase this was passed in as a script argument
 $Mode = [Mode]$Mode
 printPadding "Mode:`r`n`t$Mode"
 
@@ -183,5 +179,4 @@ printPadding "Mode:`r`n`t$Mode"
 copyItems -Source $Source -Destination $Destination
 
 # final output
-# TODO: implement file counter
 printPadding -str "$script:filesCopied file(s) copied successfully!" -padding 2
