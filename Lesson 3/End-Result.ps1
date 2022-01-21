@@ -5,6 +5,8 @@ param (
     [string]$Mode = ""
 )
 
+$DebugPreference = "Continue"
+
 # functions etc
 $title  = "`t %%%%%%%%%%%%%%%%`r`n"
 $title += "`t %              %`r`n"
@@ -14,8 +16,13 @@ $title += "`t %%%%%%%%%%%%%%%%`r`n"
 $title += "`r`n"
 $title += "`t Powered by AXICOM"
 
+enum Mode {
+    OverwriteAll
+    OverwriteNone
+    OverwriteOld
+}
 
-function printPadding($str, $padding = 1){
+function printPadding([string]$str, [int]$padding = 1){
     for($i = 0; $i -lt $padding; $i++){
         Write-Output ""
     }
@@ -27,7 +34,7 @@ function printPadding($str, $padding = 1){
     }
 }
 
-function promptFolder($description = "Select a folder"){
+function promptFolder([string]$description = "Select a folder"){
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
 
     $dirName = New-object System.Windows.Forms.FolderBrowserDialog
@@ -43,11 +50,11 @@ function promptFolder($description = "Select a folder"){
     }
 }
 
-function dirExists($dir){
+function dirExists([string]$dir){
     return Test-Path -Path $dir
 }
 
-function isModeString($str){
+function isModeString([string]$str){
     switch($str){
         "OverwriteAll" {
             return $true
@@ -67,34 +74,63 @@ function isModeString($str){
     }
 }
 
-enum Mode {
-    OverwriteAll
-    OverwriteNone
-    OverwriteOld
+function copyItems([System.IO.DirectoryInfo]$dir){
+
+    # foreach item in source
+    foreach($item in (Get-ChildItem -Path $dir)) {
+
+        # if item is file
+        if($item.GetType().Name -eq "FileInfo"){
+
+            # copy depending on mode
+            switch($Mode){
+                OverwriteAll {
+                    Write-Output "$item : Overwriting all!"
+                }
+
+                OverwriteNone {
+                    Write-Output "$item : Overwriting nothing!"
+                }
+
+                OverwriteOld {
+                    Write-Output "$item : Overwriting old stuff!"
+                }
+
+                default {
+                    throw "Not supported"
+                }
+            }
+        }
+        # else (dir)
+        else {
+            # recurse
+            copyItems $item.FullName
+        }
+    }
 }
 
 # print title
-printPadding($title)
+printPadding $title
 
 # prompt for source (if not specified by argument)
-if($Source -eq "" -or !(dirExists($Source))) {
+if($Source -eq "" -or !(dirExists $Source)) {
     # prompt
-    $Source = promptFolder("Select Source Directory")
+    $Source = promptFolder "Select Source Directory"
 }
 
-Write-Output "Source: $Source"
+printPadding "Source:`r`n`t$Source"
 
 # prompt for destination (if not specified by argument)
-if($Destination -eq "" -or !(dirExists($Destination))) {
+if($Destination -eq "" -or !(dirExists $Destination)) {
     # prompt
-    $Destination = promptFolder("Select Destination Directory")
+    $Destination = promptFolder "Select Destination Directory"
 } 
 
-Write-Output "Destination: $Destination"
+printPadding "Destination:`r`n`t$Destination"
 
 # prompt for copy mode (if not specified by argument)
 
-if($Mode -eq "" -or !(isModeString($Mode))) {
+if($Mode -eq "" -or !(isModeString $Mode)) {
     # prompt
     Write-Output "Modes: OverwriteAll, OverwriteNone, OverwriteOld"
     $Mode = ""
@@ -108,8 +144,12 @@ if($Mode -eq "" -or !(isModeString($Mode))) {
     }
 } 
 
-Write-output "Mode: $Mode"
+$Mode = [Mode]$Mode
+printPadding "Mode:`r`n`t$Mode"
 
 # business logic
+copyItems $Source
 
 # final output
+# TODO: implement file counter
+printPadding -str "Files copied successfully!" -padding 2
