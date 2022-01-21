@@ -74,10 +74,10 @@ function isModeString([string]$str){
     }
 }
 
-function copyItems([System.IO.DirectoryInfo]$dir){
+function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$Dest){
 
     # foreach item in source
-    foreach($item in (Get-ChildItem -Path $dir)) {
+    foreach($item in (Get-ChildItem -Path $Source)) {
 
         # if item is file
         if($item.GetType().Name -eq "FileInfo"){
@@ -104,7 +104,6 @@ function copyItems([System.IO.DirectoryInfo]$dir){
         # else (dir)
         else {
             # recurse
-            copyItems $item.FullName
         }
     }
 }
@@ -148,7 +147,7 @@ $Mode = [Mode]$Mode
 printPadding "Mode:`r`n`t$Mode"
 
 # business logic
-copyItems $Source
+copyItems -Source $Source -Dest $Destination
 
 # final output
 # TODO: implement file counter
