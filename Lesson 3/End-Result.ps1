@@ -109,8 +109,12 @@ function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$D
 
                 OverwriteOld {
                     $itemNew = New-Object -TypeName "System.IO.FileInfo" -ArgumentList @($itemPath)
-                    
-                    if()
+                    if(!(Test-Path $itemPath) -or ($item.LastWriteTime -gt $itemNew.LastWriteTime)){
+                        copyItem -Source $item.FullName -Destination $Destination
+                    }
+                    else{
+                        Write-Output "Skipping item: $($item.FullName)"
+                    }
                 }
 
                 default {
