@@ -12,16 +12,16 @@ function printWithPadding($content){
 }
 
 # print the title
-printWithPadding($title)
+printWithPadding $title
 
 # get value for X from user
-$x = getValueFor("x")
+$x = getValueFor "x"
 
 # get value for Y from user
-$y = getValueFor("y")
+$y = getValueFor "y"
 
 # do business logic
 $result = $x + $y
 
 # output result
-printWithPadding("Result: $x + $y = $result")
+printWithPadding "Result: $x + $y = $result"
