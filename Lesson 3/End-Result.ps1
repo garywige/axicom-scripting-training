@@ -1,11 +1,9 @@
-# accept arguments
+# script arguments
 param (
     [string]$Source = "", 
     [string]$Destination = "",
     [string]$Mode = ""
 )
-
-$DebugPreference = "Continue"
 
 # functions etc
 $title  = "`t %%%%%%%%%%%%%%%%`r`n"
@@ -17,6 +15,7 @@ $title += "`r`n"
 $title += "`t Powered by AXICOM"
 
 $script:filesCopied = 0
+$DebugPreference = "Continue"
 
 enum Mode {
     OverwriteAll
@@ -138,11 +137,15 @@ function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$D
     }
 }
 
+<#
+    ENTRY POINT
+#>
+
 # print title
 printPadding $title
 
 # prompt for source (if not specified by argument)
-if($Source -eq "" -or !(dirExists $Source)) {
+while($Source -eq "" -or !(dirExists $Source)) {
     # prompt
     $Source = promptFolder "Select Source Directory"
 }
@@ -150,7 +153,7 @@ if($Source -eq "" -or !(dirExists $Source)) {
 printPadding "Source:`r`n`t$Source"
 
 # prompt for destination (if not specified by argument)
-if($Destination -eq "" -or !(dirExists $Destination)) {
+while($Destination -eq "" -or !(dirExists $Destination)) {
     # prompt
     $Destination = promptFolder "Select Destination Directory"
 } 
