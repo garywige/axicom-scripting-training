@@ -319,3 +319,5 @@ This will cause code execution to halt and the error will bubble up to the first
 ## Conclusion
 
 In this lesson, you learned many useful concepts that can help you write much more advanced scripts than the previous lesson. I encourage you to you experiement with what you've learned so far to solidify the knowledge. A great excercise would be to expand on the Lesson 1 example and create a calculator with 4 basic modes: addition, subtraction, multiplication, and division. I leave the implementation details up to you!
+
+When you are ready for more PowerShell scripting, go ahead and go to [Lesson 3](../Lesson%203)
