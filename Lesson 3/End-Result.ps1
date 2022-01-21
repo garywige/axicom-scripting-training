@@ -74,7 +74,7 @@ function isModeString([string]$str){
     }
 }
 
-function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$Dest){
+function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$Destination){
 
     # foreach item in source
     foreach($item in (Get-ChildItem -Path $Source)) {
@@ -85,7 +85,8 @@ function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$D
             # copy depending on mode
             switch($Mode){
                 OverwriteAll {
-                    Write-Output "$item : Overwriting all!"
+                    Write-Output "New item: $item"
+                    Copy-Item -Path $item.FullName -Destination $Destination -Force
                 }
 
                 OverwriteNone {
@@ -104,14 +105,15 @@ function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$D
         # else (dir)
         else {
             # create directory in destination
-            $dirNew = "$($Dest.FullName)\$($item.Name)"
+            $dirNew = "$($Destination.FullName)\$($item.Name)"
             if(!(dirExists $dirNew )){
                 # create directory
-                New-Item -Path $Dest.FullName -Name $item.Name -ItemType "directory"
+                Write-Output "New directory: $dirNew"
+                New-Item -Path $Destination.FullName -Name $item.Name -ItemType "directory" | Out-Null
             }
 
             # recurse
-            copyItems -Source $item.FullName -Dest $dirNew
+            copyItems -Source $item.FullName -Destination $dirNew
         }
     }
 }
@@ -155,7 +157,7 @@ $Mode = [Mode]$Mode
 printPadding "Mode:`r`n`t$Mode"
 
 # business logic
-copyItems -Source $Source -Dest $Destination
+copyItems -Source $Source -Destination $Destination
 
 # final output
 # TODO: implement file counter
