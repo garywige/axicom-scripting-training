@@ -27,30 +27,89 @@ function printPadding($str, $padding = 1){
     }
 }
 
+function promptFolder($description = "Select a folder"){
+    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+
+    $dirName = New-object System.Windows.Forms.FolderBrowserDialog
+    $dirName.Description = $description
+    $dirName.RootFolder = "MyComputer"
+    $dirName.SelectedPath = ""
+
+    if($dirName.ShowDialog() -eq "OK"){
+        return $dirName.SelectedPath
+    }
+    else {
+        return $null
+    }
+}
+
+function dirExists($dir){
+    return Test-Path -Path $dir
+}
+
+function isModeString($str){
+    switch($str){
+        "OverwriteAll" {
+            return $true
+        }
+
+        "OverwriteNone" {
+            return $true
+        }
+
+        "OverwriteOld" {
+            return $true
+        }
+
+        default {
+            return $false
+        }
+    }
+}
+
+enum Mode {
+    OverwriteAll
+    OverwriteNone
+    OverwriteOld
+}
+
 # print title
 printPadding($title)
 
 # prompt for source (if not specified by argument)
-if($Source -eq "") {
+if($Source -eq "" -or !(dirExists($Source))) {
     # prompt
-} else {
-    Write-Output "Source: $Source"
+    $Source = promptFolder("Select Source Directory")
 }
+
+Write-Output "Source: $Source"
 
 # prompt for destination (if not specified by argument)
-if($Destination -eq "") {
+if($Destination -eq "" -or !(dirExists($Destination))) {
     # prompt
-} else {
-    Write-Output "Destination: $Destination"
-}
+    $Destination = promptFolder("Select Destination Directory")
+} 
+
+Write-Output "Destination: $Destination"
 
 # prompt for copy mode (if not specified by argument)
-if($Mode -eq "") {
-    # prompt
-} else {
-    Write-Output "Mode: $Mode"
-}
 
-# Validate parameters
+if($Mode -eq "" -or !(isModeString($Mode))) {
+    # prompt
+    Write-Output "Modes: OverwriteAll, OverwriteNone, OverwriteOld"
+    $Mode = ""
+
+    while($Mode -eq ""){
+        try{
+            $Mode = [Mode](Read-Host "Please enter mode")
+        } catch {
+            # do nothing
+        }
+    }
+} 
+
+Write-output "Mode: $Mode"
+
 # business logic
+
 # final output
