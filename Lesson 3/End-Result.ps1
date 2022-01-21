@@ -103,7 +103,15 @@ function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$D
         }
         # else (dir)
         else {
+            # create directory in destination
+            $dirNew = "$($Dest.FullName)\$($item.Name)"
+            if(!(dirExists $dirNew )){
+                # create directory
+                New-Item -Path $Dest.FullName -Name $item.Name -ItemType "directory"
+            }
+
             # recurse
+            copyItems -Source $item.FullName -Dest $dirNew
         }
     }
 }
