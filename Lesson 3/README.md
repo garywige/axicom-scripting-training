@@ -99,6 +99,14 @@ Go ahead and test your script before continuing.
 
 ## Write-Debug
 
+Right underneith our *$title* variable, enter this in:
+
+```
+$DebugPreference = "Continue"
+```
+
+*$DebugPreference* is called a **Preference Variable**, which can be used to change settings in the PowerShell environment. Here, we are replacing the default value of "SilentlyContinue" with "Continue" so that we may write useful debug info to the screen in bright yellow. This is a useful tool for testing your script as you write it. Throughout your scripting, you can use `Write-Debug` to write development messages to the screen that you feel are helpful. Once you're done writing the script, you can just set the value of *$DebugPreference* to "SilentlyContinue" to hide the text from the users of your script.
+
 ## Script Parameters
 
 ## New-Object
