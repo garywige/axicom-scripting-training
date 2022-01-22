@@ -109,7 +109,93 @@ $DebugPreference = "Continue"
 
 ## Script Parameters
 
+At the top of the script, type this in:
+
+```
+# script arguments
+param (
+    [string]$Source = "", 
+    [string]$Destination = "",
+    [string]$Mode = ""
+)
+```
+
+These will allow the user of the script to specify parameters when running the script, like `.\End-Result.ps1 -Source "C:\Source" -Destination "C:\Destination" -Mode "OverwriteOld"` . If you need to repeatedly run the script for testing, this can save quite a bit of time. Let's now add some code to the next section underneath where the title is printed:
+
+```
+# prompt for source (if not specified by argument)
+while($Source -eq "") {
+    # prompt
+    $Source = Read-Host "Select Source Directory"
+}
+
+printPadding "Selected Source:`r`n`t$Source"
+```
+
+The code checks for an empty string in case a value was specified as a script parameter. This is great, but it's not very resilient. If the user accidently mistypes the path, the script will happily continue and likely fail. Any time user input is involved, it's a good idea to **validate** the input and make sure that what was entered is not going to cause a bug in your app. This is just plain old good UX (user experience) design. Let's encapsulate our `Test-Path` cmdlet that we discussed earlier and use that here to make this more resilient. Underneath your **printPadding** function, declare this new one:
+
+```
+function pathExists([string]$path){
+    return Test-Path -Path $path
+}
+```
+
+Our new function is just a wrapper for `Test-Path`. In my opinion, this helps make the code more readable. If you wanted to, you could `Test-Path $item` instead of `pathExists $item`, it doesn't affect the end result. This is a DX (developer experience) enhancement, and it's sole function is to make developing the script a little bit easier to think about. Now you may edit the while loop like so:
+
+```
+while($Source -eq "" -or !(pathExists $Source)) { 
+    <code omitted>
+}
+```
+
+Now, we are validating whether the path exists before continuing, which offers the user a chance to correct mistakes and avoids bugs.
+
 ## New-Object
+
+It's great that our script is more resilient, but what if our users aren't very fast typers? They will probably loathe using our script. What if we could add a traditional folder selection dialog to our script without too much hassle? Does that sound like science fiction? I know I said we didn't want to add too many features at the beginning, but this is actually an easy one to add and it adds a lot to the UX in my opinion. If you did some googling on "powershell folder dialog", you will likely come across the **FolderBrowserDialog** that exists in the *System.Windows.Forms* namespace. We don't have to have a perfect understanding of how this works to put it to use. I have copied a code snippet into my own function and modified it slightly to fit our needs:
+
+```
+function promptFolder([string]$description = "Select a folder"){
+    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+
+    $dirName = New-object System.Windows.Forms.FolderBrowserDialog
+    $dirName.Description = $description
+    $dirName.RootFolder = "MyComputer"
+    $dirName.SelectedPath = ""
+
+    if($dirName.ShowDialog() -eq "OK"){
+        return $dirName.SelectedPath
+    }
+    else {
+        return $null
+    }
+}
+```
+
+Much of this code is specific to the FolderBrowserDialog class. We initialize **$dirName** with the `New-Object` cmdlet. This cmdlet can be used to instantiate .NET or COM objects into your PowerShell scripts. So, if you have a feature that you'd like to implement and you find examples of it being implemented in .NET code (C#, Visual Basic, etc.), it's likely that you can do the same thing in a PowerShell script. We set the properties *Description* and *RootFolder* before using the **ShowDialog()** *method* to display the dialog to the user. A *method* is basically a function that is a member of an object and we will learn more about those in another lesson. This method returns "OK" after the user selects a directory and we can use the *SelectedPath* property to grab the path that they have selected. Now that we've implemented this function, let's rewrite our prompt:
+
+```
+while($Source -eq "" -or !(pathExists $Source)) {
+    # prompt
+    $Source = promptFolder "Select Source Directory"
+}
+
+printPadding "Selected Source:`r`n`t$Source"
+```
+
+And now, we can implement this for the destination as well:
+
+```
+# prompt for destination (if not specified by argument)
+while($Destination -eq "" -or !(pathExists $Destination)) {
+    # prompt
+    $Destination = promptFolder "Select Destination Directory"
+} 
+
+printPadding "Selected Destination:`r`n`t$Destination"
+```
+
+Before continuing, run your script and verify that it functions correctly. If you're using VS Code, you may need to open a separate PowerShell window to test instead of using the built in terminal in order for the dialog to display. 
 
 ## Enums
 
