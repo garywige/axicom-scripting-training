@@ -44,3 +44,23 @@ Once you have an idea of what your script needs to do, you can then begin buildi
 # final output
 ```
 
+## Escape Characters
+
+## String Concatenation
+
+## Write-Debug
+
+## Script Parameters
+
+## New-Object
+
+## Enums
+
+## Variable Scope
+
+## Recursive Functions
+
+## Code Refactoring
+
+## Conclusion
+
