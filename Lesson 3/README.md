@@ -70,7 +70,7 @@ $title += "`t Powered by AXICOM"
 
 As you can see, we've made liberal use of escape characters here, but also broken up the title initialization into several lines using the **addition assignment operator** '+='. The operator works by adding the right hand value to the value stored in the variable, and then storing the result back in the variable on the left side of the operator. This allows us to make multi-line strings and to be able to do so without having turn our heads sideways to look at it. 
 
-Right underneith our *$title* variable, you can type in the following code:
+Right underneath our *$title* variable, you can type in the following code:
 
 ```
 function printPadding([string]$str, [int]$padding = 1){
@@ -86,7 +86,7 @@ function printPadding([string]$str, [int]$padding = 1){
 }
 ```
 
-We're making a more flexible version of the **printWithPadding** function from Lesson 1. This time, we have a second parameter that specifies how much padding the user wants above and below the text. We're choosing to be explicit with type here by specifying the type before the variable name with `[string]` and `[int]`. Doing so makes our attention clear and helps avoid bugs in the app. You can see that our second variable is assigned 1 in the parameter list. This is called a **default value**. If the caller of the function doesn't provide this parameter during the call, the default value of 1 is used. If you use default values in your function declarations, they always must be at the end of the parameter list. You should notice that we used **for loops** for the padding. We could have used **while loops** if we wanted to. Since a temporary variable is involved in tracking the iterations, a **for loop** seemed like the most appropriate choice for this.
+We're making a more flexible version of the **printWithPadding** function from Lesson 1. This time, we have a second parameter that specifies how much padding the user wants above and below the text. We're choosing to be explicit with type here by specifying the type before the variable name with `[string]` and `[int]`. Doing so makes our intention clear and helps avoid bugs in the app. You can see that our second variable is assigned 1 in the parameter list. This is called a **default value**. If the caller of the function doesn't provide this parameter during the call, the default value of 1 is used. If you use default values in your function declarations, they always must be at the end of the parameter list. You should notice that we used **for loops** for the padding. We could have used **while loops** if we wanted to. Since a temporary variable is involved in tracking the iterations, a **for loop** seemed like the most appropriate choice for this.
 
 With our new function in hand, you may implement the first section below the entry point:
 
@@ -99,7 +99,7 @@ Go ahead and test your script before continuing.
 
 ## Write-Debug
 
-Right underneith our *$title* variable, enter this in:
+Right underneath our *$title* variable, enter this in:
 
 ```
 $DebugPreference = "Continue"
@@ -140,7 +140,7 @@ function pathExists([string]$path){
 }
 ```
 
-Our new function is just a wrapper for `Test-Path`. In my opinion, this helps make the code more readable. If you wanted to, you could `Test-Path $item` instead of `pathExists $item`, it doesn't affect the end result. This is a DX (developer experience) enhancement, and it's sole function is to make developing the script a little bit easier to think about. Now you may edit the while loop like so:
+Our new function is just a wrapper for `Test-Path`. In my opinion, this helps make the code more readable. If you wanted to, you could use `Test-Path $item` instead of `pathExists $item`, it doesn't affect the end result. This is a DX (developer experience) enhancement, and it's sole function is to make developing the script a little bit easier to think about. Now you may edit the while loop like so:
 
 ```
 while($Source -eq "" -or !(pathExists $Source)) { 
@@ -152,7 +152,7 @@ Now, we are validating whether the path exists before continuing, which offers t
 
 ## New-Object
 
-It's great that our script is more resilient, but what if our users aren't very fast typers? They will probably loathe using our script. What if we could add a traditional folder selection dialog to our script without too much hassle? Does that sound like science fiction? I know I said we didn't want to add too many features at the beginning, but this is actually an easy one to add and it adds a lot to the UX in my opinion. If you did some googling on "powershell folder dialog", you will likely come across the **FolderBrowserDialog** that exists in the *System.Windows.Forms* namespace. We don't have to have a perfect understanding of how this works to put it to use. I have copied a code snippet into my own function and modified it slightly to fit our needs:
+It's great that our script is more resilient, but what if our users aren't very fast typers? They will probably loathe using our script. What if we could add a traditional folder selection dialog to our script without too much hassle? Does that sound like science fiction? I know I said we didn't want to add too many features at the beginning, but this is actually an easy one to add and it's a nice enhancement to the UX in my opinion. If you did some googling on "powershell folder dialog", you will likely come across the **FolderBrowserDialog** that exists in the *System.Windows.Forms* namespace. We don't have to have a perfect understanding of how this works to put it to use. I have copied a code snippet into my own function and modified it slightly to fit our needs:
 
 ```
 function promptFolder([string]$description = "Select a folder"){
@@ -172,7 +172,7 @@ function promptFolder([string]$description = "Select a folder"){
 }
 ```
 
-Much of this code is specific to the FolderBrowserDialog class. We initialize **$dirName** with the `New-Object` cmdlet. This cmdlet can be used to instantiate .NET or COM objects into your PowerShell scripts. So, if you have a feature that you'd like to implement and you find examples of it being implemented in .NET code (C#, Visual Basic, etc.), it's likely that you can do the same thing in a PowerShell script. We set the properties *Description* and *RootFolder* before using the **ShowDialog()** *method* to display the dialog to the user. A *method* is basically a function that is a member of an object and we will learn more about those in another lesson. This method returns "OK" after the user selects a directory and we can use the *SelectedPath* property to grab the path that they have selected. Now that we've implemented this function, let's rewrite our prompt:
+Much of this code is specific to the FolderBrowserDialog class. We initialize **$dirName** with the `New-Object` cmdlet. This cmdlet can be used to instantiate .NET or COM objects in your PowerShell scripts. So, if you have a feature that you'd like to implement and you find examples of it being implemented in .NET code (C#, Visual Basic, etc.), it's likely that you can do the same thing in a PowerShell script. We set the properties *Description* and *RootFolder* before using the **ShowDialog()** *method* to display the dialog to the user. A *method* is basically a function that is a member of an object and we will learn more about those in another lesson. This method returns "OK" after the user selects a directory and we can use the *SelectedPath* property to grab the path that they have selected. Now that we've implemented this function, let's rewrite our prompt:
 
 ```
 while($Source -eq "" -or !(pathExists $Source)) {
