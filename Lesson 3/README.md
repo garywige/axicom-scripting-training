@@ -46,7 +46,29 @@ Once you have an idea of what your script needs to do, you can then begin buildi
 
 ## Escape Characters
 
+Generally, I like to write apps similar to the way I put a 1000 piece puzzle together. I start with the easy stuff and work my way in to the challenging parts. Let's go ahead and set our title. Go ahead and type this out right below `# functions etc`:
+
+```
+$title  = "`t Power Copy`r`n`t Powered by AXICOM"
+```
+
+You can use the backtick character '\`' to indicate mark an **escape character**. Escape characters are special characters used in strings used to represent things that aren't alphanumeric, like tabs, return characters, beep noises (hey, never know when you'll need it) and other things you may need in a string. Escaping 't' will result in a tab character, giving us a little margin on the left, or making certain text stand out from other text. I usually need to escape 'r' and 'n' in combination to represent a return carriage and newline. Now that you understand how escape characters work, let's improve on this.
+
 ## String Concatenation
+
+Go ahead and replace the line with the title initialization with the following:
+
+```
+$title  = "`t %%%%%%%%%%%%%%%%`r`n"
+$title += "`t %              %`r`n"
+$title += "`t %  Power Copy  %`r`n"
+$title += "`t %              %`r`n" 
+$title += "`t %%%%%%%%%%%%%%%%`r`n"
+$title += "`r`n"
+$title += "`t Powered by AXICOM"
+```
+
+As you can see, we've made liberal use of escape characters here, but also broken up the title initialization into several lines using the **addition assignment operator** '+='. The operator works by adding the right hand value to the value stored in the variable, and then storing the result back in the variable on the left side of the operator. This allows us to make multi-line strings and to be able to do so without having turn our heads sideways to look at it. 
 
 ## Write-Debug
 
