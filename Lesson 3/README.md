@@ -416,7 +416,7 @@ OverwriteNone {
 
 Test it and make sure it works.
 
-For the final mode, we need to be able to compare the *LastWriteTime* property of each *FileInfo* object. In order to do that, we need to use `New-Object` to instantiate a new *FileInfo* object for the destination item. We know we at least need to write this: `$itemNew = New-Object -TypeName "System.IO.FileInfo"`, but we have a problem with this. The issue is that this particular type doesn't have a **constructor** with no arguments (called a **default constructor**). You can find this out by looking at the Microsoft documentation for (*System.IO.FileInfo*)[https://docs.microsoft.com/en-us/dotnet/api/system.io.fileinfo?view=net-6.0]. In order to provide the arguments needed by the constructor, we need to pass an **array** to the `-ArgumentList` parameter of `New-Object`. We do this like so:
+For the final mode, we need to be able to compare the *LastWriteTime* property of each *FileInfo* object. In order to do that, we need to use `New-Object` to instantiate a new *FileInfo* object for the destination item. We know we at least need to write this: `$itemNew = New-Object -TypeName "System.IO.FileInfo"`, but we have a problem with this. The issue is that this particular type doesn't have a **constructor** with no arguments (called a **default constructor**). You can find this out by looking at the Microsoft documentation for (System.IO.FileInfo)[https://docs.microsoft.com/en-us/dotnet/api/system.io.fileinfo?view=net-6.0]. In order to provide the arguments needed by the constructor, we need to pass an **array** to the `-ArgumentList` parameter of `New-Object`. We do this like so:
 
 ```
 $itemNew = New-Object -TypeName "System.IO.FileInfo" -ArgumentList @($itemDest)
