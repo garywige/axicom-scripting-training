@@ -9,5 +9,5 @@
 # prompt for source (if not specified by argument)
 # prompt for destination (if not specified by argument)
 # prompt for copy mode (if not specified by argument)
-# business logic
+# copy the data
 # final output

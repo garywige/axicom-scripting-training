@@ -40,7 +40,7 @@ Once you have an idea of what your script needs to do, you can then begin buildi
 # prompt for source (if not specified by argument)
 # prompt for destination (if not specified by argument)
 # prompt for copy mode (if not specified by argument)
-# business logic
+# copy the data
 # final output
 ```
 
