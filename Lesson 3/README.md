@@ -295,7 +295,171 @@ $script:filesCopied = 0
 ```
 ## Recursive Functions
 
+We've now reached the *final boss* of this game. It's a 3-headed hydra flinging words of discouragement in our direction. By defeating the smaller enemies first, we've silenced all but the hydra and armed ourselves with the much needed confidence that we will need to overcome it.
+
+Before writing any code, we can stop and think about this for a moment. In order to implement our 3 modes, we need to to either copy or skip each file. When we initially run `Get-ChildItem`, it will return 2 different types of objects: `FileInfo` and `DirectoryInfo`, which we are going to handle differently. For each FileInfo returned, we are going to copy it based on the selected mode. For each DirectoryInfo returned, we are going to treat it the same way that we treat the root Source directory and pass it into our function. That way, we can reuse the same function all the way down the file tree. This is called a **recursive function**. Here's an example to help you understand how this works:
+
+```
+function recursive($var = 0){
+    Write-Output $var
+    if($var -lt 10){
+        recursive(++$var)
+    }
+}
+```
+
+This function will print out numbers 0-10 to the screen by calling itself with different values than the original call. So, all we have to do is implement our function in a way so it can call itself with different $Source and $Destination values. Let's go ahead and add this in the appropriate section of our script:
+
+```
+# copy the data
+copyItems -Source $Source -Destination $Destination
+```
+
+We haven't implemented this function yet, so let's lay out some scaffolding at the bottom of our `# functions etc` section:
+
+```
+function copyItems([System.IO.DirectoryInfo]$Source, [System.IO.DirectoryInfo]$Destination){
+
+    # foreach item in source
+    foreach($item in (Get-ChildItem -Path $Source)) {
+
+        $itemDest = "$($Destination.FullName)\$($item.Name)"
+        Write-Debug "item destination: $itemDest"
+
+        # if item is file
+        if($item.GetType().Name -eq "FileInfo"){
+
+            Write-Debug "Item is a file!"
+
+            # copy depending on mode
+            switch($Mode){
+                OverwriteAll {
+                    Write-Debug "Mode: OverwriteAll"
+                }
+
+                OverwriteNone {
+                    Write-Debug "Mode: OverwriteNone"
+                }
+
+                OverwriteOld {
+                    Write-Debug "Mode: OverwriteOld"
+                }
+
+                default {
+                    throw "Not supported"
+                }
+            }
+        }
+        # else (dir)
+        else {
+            Write-Debug "Item is a directory!"
+
+            # recurse
+            copyItems -Source $item.FullName -Destination $itemDest
+        }
+    }
+}
+```
+
+We use `$item.GetType().Name` to determine whether we are working with a file or a directory. That was found by using Get-Member in a PowerShell window to discover what kind of properties are available on each. Each type has a *Name* property that contains a string representation of the type. I learned afterwards that you can also compare it using this method: `$item.GetType() -eq [FileInfo]`. Either way works and I'll leave it up to you which method to use. 
+
+We're using the `$itemDest` variable to store the new location of the item, whether it is a directory or a file. This is needed to call copyItems for each directory and will also be needed by our file copy code when we get to that part. Notice that we've added several `Write-Debug` sections. This helps us when testing our script to make sure that it's behaving as expected. As we get closer to being done, those lines can be removed.
+
+This should feel a little easier to think about now that we've put the "edge pieces" of this function in place. If you test the code at this point with a source directory containing multiple directory layers, you'll find that it will throw an error about the destination directories not existing. Let's handle our directory specific code before tackling the file copy code. Modify that section of the function like so:
+
+```
+# create directory in destination
+if(!(pathExists $itemDest )){
+    # create directory
+    Write-Output "New directory: $itemDest"
+    New-Item -Path $Destination.FullName -Name $item.Name -ItemType "directory" | Out-Null
+}
+
+# recurse
+copyItems -Source $item.FullName -Destination $itemDest
+```
+
+Here, we use the `New-Item` cmdlet to create a new directory in the new location if it doesn't exist. The `... | Out-Null` section ensures that we don't get undesired output to the screen from that command. You can use the '|' pipe symbol to redirect output to additional cmdlets. The `Out-Null` cmdlet silences the output. You should be able to run your script now and have it successfully recreate the source directory structure in the destination.
+
+Great, now let's implement the simplest of the 3 modes: OverwriteAll:
+
+```
+OverwriteAll {
+    copyItem -Source $item.FullName -Destination $Destination
+}
+```
+
+Right above our **copyItems** function, let's implement **copyItem**:
+
+```
+function copyItem([string]$Source, [string]$Destination){
+    Write-Output "Copy item: $Source`r`n`tDestination: $Destination"
+    Copy-Item -Path $Source -Destination $Destination -Force
+    $script:filesCopied++
+}
+```
+
+We've written this in a way so it can be used for all 3 modes, and it handles the incrementing of **$script:filesCopied**. Go ahead and test that the script works with OverwriteAll mode before continuing. 
+
+The next easiest mode to implement is OverwriteNone. The only thing we need to do differently is skip the file if it exists. We can easily do that like so:
+
+```
+OverwriteNone {
+    if(pathExists $itemDest ) {
+        Write-Output "Skipping item: $($item.FullName)"
+    } else {
+        # copy the item
+        copyItem -Source $item.FullName -Destination $Destination
+    }
+}
+```
+
+Test it and make sure it works.
+
+For the final mode, we need to be able to compare the *LastWriteTime* property of each *FileInfo* object. In order to do that, we need to use `New-Object` to instantiate a new *FileInfo* object for the destination item. We know we at least need to write this: `$itemNew = New-Object -TypeName "System.IO.FileInfo"`, but we have a problem with this. The issue is that this particular type doesn't have a **constructor** with no arguments (called a **default constructor**). You can find this out by looking at the Microsoft documentation for (*System.IO.FileInfo*)[https://docs.microsoft.com/en-us/dotnet/api/system.io.fileinfo?view=net-6.0]. In order to provide the arguments needed by the constructor, we need to pass an **array** to the `-ArgumentList` parameter of `New-Object`. We do this like so:
+
+```
+$itemNew = New-Object -TypeName "System.IO.FileInfo" -ArgumentList @($itemDest)
+```
+
+Now that we have two *FileInfo* objects that we can compare, we can proceed with the rest of the implementation:
+
+```
+OverwriteOld {
+    $itemNew = New-Object -TypeName "System.IO.FileInfo" -ArgumentList @($itemDest)
+    if(!(pathExists $itemDest)){
+        copyItem -Source $item.FullName -Destination $Destination
+    }
+    elseif($item.LastWriteTime -gt $itemNew.LastWriteTime){
+        copyItem -Source $item.FullName -Destination $Destination
+    }
+    else{
+        Write-Output "Skipping item: $($item.FullName)"
+    }
+}
+```
+
+So, we handle 3 conditions: the destination item doesn't exist (copy it), the destination is older (copy it), and neither (skip it). This is what I came up with originally, but we have some code duplication here. Let's refactor this like so using an `-or` operator:
+
+```
+OverwriteOld {
+    $itemNew = New-Object -TypeName "System.IO.FileInfo" -ArgumentList @($itemDest)
+
+    if(!(pathExists $itemDest) -or ($item.LastWriteTime -gt $itemNew.LastWriteTime)){
+        copyItem -Source $item.FullName -Destination $Destination
+    }
+    else{
+        Write-Output "Skipping item: $($item.FullName)"
+    }
+}
+```
+
+Notice that `!(pathExists $itemDest)` is to the left of the `-or` operator. This is important because if the path doesn't exist, we don't want the comparison of the *LastWriteTime* property to happen because you'd be performing this on a non-existent file. I don't even know if that would cause an exception to be thrown, but I would assume so. Before cracking open the champaign, let's test this mode and make sure it functions the way we expect it to. You may need to modify a file in your source folder to verify that it's working correctly.  
+
 ## Code Refactoring
+
+Now that your script is working correctly, it's a good idea to go through it from top to bottom and clean it up for production use. You can remove any unnecessary `Write-Debug` sections, remove any duplicated code, fine tune the output strings, and further customize the title if you'd like to. 
 
 ## Conclusion
 
+In this lesson, we put our knowledge to use by constructing a script that can actually be used for a very common IT task. My hope is that you've discovered just how easy it is to translate common tasks into reusable code. I also wish to dispel the non-sensicle attitude that you have to have every cmdlet memorized before you can use PowerShell. There are very few things that need to be committed to memory to be successful at this. The only thing you need to commit to memory is *how to find the information you don't remember*. Knowing how to use a search engine and bookmark pages is way more important than memorizing cmdlets or the parameters that they take. There are a few cmdlets that are great to remember if you can, like `Get-Member`, `Get-Help`, and `Get-Command`, simply because these cmdlets will help the future you get the information they need for their projects.
