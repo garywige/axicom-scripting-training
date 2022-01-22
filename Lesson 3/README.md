@@ -267,6 +267,32 @@ printPadding "Selected Mode:`r`n`t$Mode"
 
 ## Variable Scope
 
+Before we focus on the `# copy the data` section, we still have more puzzle edge pieces that we can put in place first. Let's fill in the last section:
+
+```
+# final output
+printPadding -str "Files copied successfully!" -padding 2
+```
+
+This is good feedback so the user knows that the script executed all the way to the end successfully. But, a simple improvement we can make over this is to print out how many files were copied. That sounds complicated! It's not. All we have to do is wrap our copy logic in a function and iterate a variable after the copy. That way, anytime our copy function is used, it increments the variable for the final output.
+
+```
+# final output
+printPadding -str "$filesCopied file(s) copied successfully!" -padding 2
+```
+
+Okay, there is one issue with this plan though. Modifying the variable within the function doesn't work because it's outside of the scope. The script assumes that `$filesCopied++` is a variable local to the function and does not increment our variable. The way to fix this is to specify that the variable is script-wide like so:
+
+```
+# final output
+printPadding -str "$script:filesCopied file(s) copied successfully!" -padding 2
+```
+
+Any time the variable is read or written to, you must write it like `$script:filesCopied`. You might as well think of that as the name of the variable. Somewhere under `# functions etc`, you'll need to add the following initialization:
+
+```
+$script:filesCopied = 0
+```
 ## Recursive Functions
 
 ## Code Refactoring
