@@ -27,3 +27,20 @@ $item | Get-Member
 At the top of the output, you can see the type is "System.IO.DirectoryInfo". Oh, that's because we did that on a *directory*. Now try running that `$item = Get-Item ...` again but with a file as the last parameter. After running the `Get-Member` cmdlet on that one, you will find the type is "System.IO.FileInfo". Below that is a lot of useful info. If you Google that type name, you will find the Microsoft documentation that contains the same info about methods and properties, and additional info that we will need later on. In particular, there is a very useful property we can use named "LastWriteTime". Bingo, there's our answer to our last feature. The type returned by LastWriteTime is *DateTime*, which supports comparison using the -lt & -gt operators.
 
 Once you have an idea of what your script needs to do, you can then begin building a scaffolding to your script in the form of comments. I've done this for you in the *Start-Here.ps1* script.
+
+```
+# script arguments
+# functions etc
+
+<#
+    ENTRY POINT
+#>
+
+# print title
+# prompt for source (if not specified by argument)
+# prompt for destination (if not specified by argument)
+# prompt for copy mode (if not specified by argument)
+# business logic
+# final output
+```
+
