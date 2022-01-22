@@ -70,6 +70,33 @@ $title += "`t Powered by AXICOM"
 
 As you can see, we've made liberal use of escape characters here, but also broken up the title initialization into several lines using the **addition assignment operator** '+='. The operator works by adding the right hand value to the value stored in the variable, and then storing the result back in the variable on the left side of the operator. This allows us to make multi-line strings and to be able to do so without having turn our heads sideways to look at it. 
 
+Right underneith our *$title* variable, you can type in the following code:
+
+```
+function printPadding([string]$str, [int]$padding = 1){
+    for($i = 0; $i -lt $padding; $i++){
+        Write-Output ""
+    }
+
+    Write-Output $str
+
+    for($i = 0; $i -lt $padding; $i++){
+        Write-Output ""
+    }
+}
+```
+
+We're making a more flexible version of the **printWithPadding** function from Lesson 1. This time, we have a second parameter that specifies how much padding the user wants above and below the text. We're choosing to be explicit with type here by specifying the type before the variable name with `[string]` and `[int]`. Doing so makes our attention clear and helps avoid bugs in the app. You can see that our second variable is assigned 1 in the parameter list. This is called a **default value**. If the caller of the function doesn't provide this parameter during the call, the default value of 1 is used. If you use default values in your function declarations, they always must be at the end of the parameter list. You should notice that we used **for loops** for the padding. We could have used **while loops** if we wanted to. Since a temporary variable is involved in tracking the iterations, a **for loop** seemed like the most appropriate choice for this.
+
+With our new function in hand, you may implement the first section below the entry point:
+
+```
+# print title
+printPadding $title
+```
+
+Go ahead and test your script before continuing.
+
 ## Write-Debug
 
 ## Script Parameters
