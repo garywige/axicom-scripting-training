@@ -166,7 +166,7 @@ while($Mode -eq "" -or !(isModeString $Mode)) {
 $Mode = [Mode]$Mode
 printPadding "Selected Mode:`r`n`t$Mode"
 
-# business logic
+# copy the data
 copyItems -Source $Source -Destination $Destination
 
 # final output

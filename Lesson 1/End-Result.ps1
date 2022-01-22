@@ -20,7 +20,7 @@ $x = getValueFor "x"
 # get value for Y from user
 $y = getValueFor "y"
 
-# do business logic
+# do work
 $result = $x + $y
 
 # output result

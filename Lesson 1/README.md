@@ -10,7 +10,7 @@ The first scripting tool I will teach you is the **comment**. Comments are typic
 # print the title
 # get value for X from user
 # get value for Y from user
-# do business logic
+# do work
 # output result
 ```
 
@@ -114,7 +114,7 @@ And replace the line of `Write-Output $title` with `printWithPadding $title`. De
 
 ## Casting
 
-Okay, so the rest of the script should be a breeze at this point, right? It should, but you will learn not to get your hopes up too high as a coder! Let's insert this code underneith `# do business logic`:
+Okay, so the rest of the script should be a breeze at this point, right? It should, but you will learn not to get your hopes up too high as a coder! Let's insert this code underneith `# do work`:
 
 ```
 $result = $x + $y
