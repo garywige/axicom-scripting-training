@@ -197,7 +197,73 @@ printPadding "Selected Destination:`r`n`t$Destination"
 
 Before continuing, run your script and verify that it functions correctly. If you're using VS Code, you may need to open a separate PowerShell window to test instead of using the built in terminal in order for the dialog to display. 
 
-## Enums
+## Enum
+
+In the next section below our prompt for a destination, we can implement the following:
+
+```
+# prompt for copy mode (if not specified by argument)
+Write-Output "Supported Modes: OverwriteAll, OverwriteNone, OverwriteOld"
+
+while($Mode -eq "") {
+    $Mode = Read-Host "Please enter mode"
+} 
+
+printPadding "Selected Mode:`r`n`t$Mode"
+```
+
+As long as the string is empty, the user will be asked to enter one of 3 modes. This is a great start, but there is no input validation and this code faces the same problem as the previous two sections. Just below our *$DebugPreference*, enter the following:
+
+```
+enum Mode {
+    OverwriteAll
+    OverwriteNone
+    OverwriteOld
+}
+```
+
+With this, we have created a new *type* named **Mode** that has 3 possible values. Now, let's modify our Mode prompt slightly:
+
+```
+while($Mode -eq "") {
+    try {
+        $Mode = [Mode](Read-Host "Please enter mode")
+    }
+    catch {
+        # do nothing
+    }
+} 
+```
+
+We cast the string input to a **Mode**. If the cast fails due to incorrect input, the loop repeats until the user gets it right. This is great, but what if the user enters a mode as a script parameter? Add this function to our function section somewhere below where the enum is declared:
+
+```
+function isModeString([string]$str){
+    try {
+        [Mode]$str
+    } catch {
+        return $false
+    }
+
+    return $true
+}
+```
+
+This function verifies whether a string can be converted to a Mode in the same way we implemented the last section, using a try/catch block. Now, let's modify our while loop:
+
+```
+while($Mode -eq "" -or !(isModeString $Mode)) {
+    <code omitted>
+}
+```
+
+Just in case we have the mode from the script parameter, we would like to reinitialize this variable so that it is our new **Mode** type rather than a string:
+
+```
+# cast to Mode incase this was passed in as a script argument
+$Mode = [Mode]$Mode
+printPadding "Selected Mode:`r`n`t$Mode"
+```
 
 ## Variable Scope
 

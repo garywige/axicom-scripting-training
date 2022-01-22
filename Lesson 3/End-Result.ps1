@@ -55,23 +55,13 @@ function pathExists([string]$path){
 }
 
 function isModeString([string]$str){
-    switch($str){
-        "OverwriteAll" {
-            return $true
-        }
-
-        "OverwriteNone" {
-            return $true
-        }
-
-        "OverwriteOld" {
-            return $true
-        }
-
-        default {
-            return $false
-        }
+    try {
+        [Mode]$str
+    } catch {
+        return $false
     }
+
+    return $true
 }
 
 
