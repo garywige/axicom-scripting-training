@@ -6,7 +6,7 @@ In the previous lesson, the goal was to get you oriented with your scripting env
 
 ## The Boolean Type
 
-There are going to be instances where you need to evaluate a variable and change your program flow accordingly. This will usually involve **boolean** values, which can either be `$true` or `$false`. Sometimes, testing the boolean value of a variable is sufficient, like `if($var)` (you will learn about if statements soon). Other times, you may need a more complex statement to evaluate, like `if(($var -ne $null)-and ($var.value -eq 360))`. 
+There are going to be instances where you need to evaluate a variable and change your program flow accordingly. This will usually involve **boolean** values, which can either be `$true` or `$false`. Sometimes, testing the boolean value of a variable is sufficient, like `if($var)` (you will learn about **if statements** soon). Other times, you may need a more complex statement to evaluate, like `if(($var -ne $null)-and ($var.value -eq 360))`. 
 
 ```
 $var1 = $true
@@ -319,3 +319,5 @@ This will cause code execution to halt and the error will bubble up to the first
 ## Conclusion
 
 In this lesson, you learned many useful concepts that can help you write much more advanced scripts than the previous lesson. I encourage you to you experiement with what you've learned so far to solidify the knowledge. A great excercise would be to expand on the Lesson 1 example and create a calculator with 4 basic modes: addition, subtraction, multiplication, and division. I leave the implementation details up to you!
+
+When you are ready for more PowerShell scripting, go ahead and go to [Lesson 3](../Lesson%203)
