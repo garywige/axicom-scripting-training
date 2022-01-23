@@ -158,13 +158,13 @@ It's great that our script is more resilient, but what if our users aren't very 
 function promptFolder([string]$description = "Select a folder"){
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
 
-    $dirName = New-object System.Windows.Forms.FolderBrowserDialog
-    $dirName.Description = $description
-    $dirName.RootFolder = "MyComputer"
-    $dirName.SelectedPath = ""
+    $dlg = New-object System.Windows.Forms.FolderBrowserDialog
+    $dlg.Description = $description
+    $dlg.RootFolder = "MyComputer"
+    $dlg.SelectedPath = ""
 
-    if($dirName.ShowDialog() -eq "OK"){
-        return $dirName.SelectedPath
+    if($dlg.ShowDialog() -eq "OK"){
+        return $dlg.SelectedPath
     }
     else {
         return $null
@@ -172,7 +172,7 @@ function promptFolder([string]$description = "Select a folder"){
 }
 ```
 
-Much of this code is specific to the FolderBrowserDialog class. We initialize **$dirName** with the `New-Object` cmdlet. This cmdlet can be used to instantiate .NET or COM objects in your PowerShell scripts. So, if you have a feature that you'd like to implement and you find examples of it being implemented in .NET code (C#, Visual Basic, etc.), it's likely that you can do the same thing in a PowerShell script. We set the properties *Description* and *RootFolder* before using the **ShowDialog()** *method* to display the dialog to the user. A *method* is basically a function that is a member of an object and we will learn more about those in another lesson. This method returns "OK" after the user selects a directory and we can use the *SelectedPath* property to grab the path that they have selected. Now that we've implemented this function, let's rewrite our prompt:
+Much of this code is specific to the FolderBrowserDialog class. We initialize **$dlg** with the `New-Object` cmdlet. This cmdlet can be used to instantiate .NET or COM objects in your PowerShell scripts. So, if you have a feature that you'd like to implement and you find examples of it being implemented in .NET code (C#, Visual Basic, etc.), it's likely that you can do the same thing in a PowerShell script. We set the properties *Description* and *RootFolder* before using the **ShowDialog()** *method* to display the dialog to the user. A *method* is basically a function that is a member of an object and we will learn more about those in another lesson. This method returns "OK" after the user selects a directory and we can use the *SelectedPath* property to grab the path that they have selected. Now that we've implemented this function, let's rewrite our prompt:
 
 ```
 while($Source -eq "" -or !(pathExists $Source)) {
@@ -293,9 +293,10 @@ Any time the variable is read or written to, you must write it like `$script:fil
 ```
 $script:filesCopied = 0
 ```
+
 ## Recursive Functions
 
-We've now reached the *final boss* of this game. It's a 3-headed hydra flinging words of discouragement in our direction. By defeating the smaller enemies first, we've silenced all but the hydra and armed ourselves with the much needed confidence that we will need to overcome it.
+We've now reached the *final boss* of this game. It's a 3-headed hydra flinging flaming words of discouragement in our direction. By defeating the smaller opponents first, we've silenced all but the hydra and armed ourselves with the much needed confidence that we will need to overcome it.
 
 Before writing any code, we can stop and think about this for a moment. In order to implement our 3 modes, we need to to either copy or skip each file. When we initially run `Get-ChildItem`, it will return 2 different types of objects: `FileInfo` and `DirectoryInfo`, which we are going to handle differently. For each FileInfo returned, we are going to copy it based on the selected mode. For each DirectoryInfo returned, we are going to treat it the same way that we treat the root Source directory and pass it into our function. That way, we can reuse the same function all the way down the file tree. This is called a **recursive function**. Here's an example to help you understand how this works:
 

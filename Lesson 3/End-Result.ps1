@@ -37,13 +37,13 @@ function printPadding([string]$str, [int]$padding = 1){
 function promptFolder([string]$description = "Select a folder"){
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
 
-    $dirName = New-object System.Windows.Forms.FolderBrowserDialog
-    $dirName.Description = $description
-    $dirName.RootFolder = "MyComputer"
-    $dirName.SelectedPath = ""
+    $dlg = New-object System.Windows.Forms.FolderBrowserDialog
+    $dlg.Description = $description
+    $dlg.RootFolder = "MyComputer"
+    $dlg.SelectedPath = ""
 
-    if($dirName.ShowDialog() -eq "OK"){
-        return $dirName.SelectedPath
+    if($dlg.ShowDialog() -eq "OK"){
+        return $dlg.SelectedPath
     }
     else {
         return $null
