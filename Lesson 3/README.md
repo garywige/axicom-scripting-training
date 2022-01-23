@@ -52,7 +52,7 @@ Generally, I like to write apps similar to the way I put a 1000 piece puzzle tog
 $title  = "`t Power Copy`r`n`t Powered by AXICOM"
 ```
 
-You can use the backtick character '\`' to mark an **escape character**. Escape characters are special characters used in strings used to represent things that aren't alphanumeric, like tabs, return characters, beep noises (hey, never know when you'll need it) and other things you may need in a string. Escaping 't' will result in a tab character, giving us a little margin on the left, or making certain text stand out from other text. I usually need to escape 'r' and 'n' in combination to represent a return carriage and newline. Now that you understand how escape characters work, let's improve on this.
+You can use the backtick character '\`' to mark an **escape character**. Escape characters are special characters used in strings to represent things that aren't alphanumeric, like tabs, return characters, beep noises (hey, never know when you'll need it) and other things you may need in a string. Escaping 't' will result in a tab character, giving us a little margin on the left, or making certain text stand out from other text. I usually need to escape 'r' and 'n' in combination to represent a return carriage and newline. Now that you understand how escape characters work, let's improve on this.
 
 ## String Concatenation
 

@@ -57,7 +57,7 @@ Our next section is asking us to `# get value for x from user`. In order to get 
 $x = Read-Host "Please enter value for x"
 ```
 
-With a single line of code, you have output "Please enter a value for x: " to the screen, grabbed what the user typed in prior to hitting **Enter**, and assigned that string to $x. For testing, insert the following line of code underneith:
+With a single line of code, you have output "Please enter a value for x: " to the screen, grabbed what the user typed in prior to hitting **Enter**, and assigned that string to $x. For testing, insert the following line of code underneath:
 
 ```
 Write-Output "x = $x"
@@ -80,7 +80,7 @@ Let's add a new section below our $title variable assignment at the top:
 # functions
 ```
 
-Underneith that line, enter the following:
+underneath that line, enter the following:
 
 ```
 function getValueFor($varname){
@@ -114,13 +114,13 @@ And replace the line of `Write-Output $title` with `printWithPadding $title`. De
 
 ## Casting
 
-Okay, so the rest of the script should be a breeze at this point, right? It should, but you will learn not to get your hopes up too high as a coder! Let's insert this code underneith `# do work`:
+Okay, so the rest of the script should be a breeze at this point, right? It should, but you will learn not to get your hopes up too high as a coder! Let's insert this code underneath `# do work`:
 
 ```
 $result = $x + $y
 ```
 
-We are adding $x and $y together and assigning the result to $result. Operators like '+' can work on variables depending on their underlying **type** . We are expecting our variables $x and $y to be a number type, but is that really the case? Let's output the result to find out. Enter the following underneith `# output result`:
+We are adding $x and $y together and assigning the result to $result. Operators like '+' can work on variables depending on their underlying **type** . We are expecting our variables $x and $y to be a number type, but is that really the case? Let's output the result to find out. Enter the following underneath `# output result`:
 
 ```
 printWithPadding "Result: $x + $y = $result"
