@@ -22,13 +22,13 @@ class IPAddress {
 
     IPAddress([string]$str){
         $parts = $str.Split('.')
-        for($i = 0; $i -lt $this.Octets.Count; $i++){
-            $this.Octets[$i] = [Byte]$parts[$i]
+        for($i = 0; $i -lt 4; $i++){
+            $this.Octets[$i] = [Byte]($parts[$i])
         }
     }
 
     IPAddress([Byte[]]$ip){
-        for($i = 0; $i -lt $this.Octets.Count; $i++){
+        for($i = 0; $i -lt 4; $i++){
             $this.Octets[$i] = $ip[$i]
         }
     }
@@ -128,8 +128,12 @@ printPadding $title 2
 # prompt user for start IP address
 promptIP ([ref]$StartIP) "Start IP"
 
+Write-Debug "typeof StartIP: $($StartIP.GetType())"
+
 # prompt for end IP address
 promptIP ([ref]$EndIP) "End IP"
+
+Write-Debug "typeof EndIP: $($EndIP.GetType())"
 
 # validate that end IP address comes after start IP address
 if(!($EndIP.GreaterThan($StartIP))){
@@ -137,4 +141,39 @@ if(!($EndIP.GreaterThan($StartIP))){
 }
 
 # perform the scan
+[int]$testCount = $EndIP.Octets[0] - $StartIP.Octets[0] + 1
+$testCount     *= $EndIP.Octets[1] - $StartIP.Octets[1] + 1
+$testCount     *= $EndIP.Octets[2] - $StartIP.Octets[2] + 1
+try{
+    $testCount     *= $EndIP.Octets[3] - $StartIP.Octets[3] + 1
+}
+catch{
+    Write-Error "Scanning the entire internet is not supported :P"
+    return
+}
+
+Write-Debug "Test count: $testCount"
+
+[Test[]]$Tests = [Test[]]::new($testCount)
+
+[int]$selector = 0
+for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
+
+    for([Byte]$j = $StartIP.Octets[1]; $j -le $EndIP.Octets[1]; $j++){
+
+        for([Byte]$k = $StartIP.Octets[2]; $k -le $EndIP.Octets[2]; $k++){
+
+            for([Byte]$l = $StartIP.Octets[3]; $l -le $EndIP.Octets[3]; $l++){
+                
+                # TODO: potentially faulty logic: unless the last octet is 0-254, it will skip addresses outside of that range when iterating through the other octets
+                $ipNew = [IPAddress]::new([Byte[]]@($i, $j, $k, $l))
+
+                $Tests[$selector++] = [Test]::new($ipNew)
+
+                Write-Debug "New IP to scan: $ipNew"
+            }
+        }
+    }
+}
+
 # output the result
