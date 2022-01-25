@@ -101,7 +101,7 @@ function isValidIP([string]$str){
 
     foreach($part in $parts){
         $n = [int]$part
-        if($n -gt 254 -or $n -eq 0){
+        if($n -gt 254){
             return $false
         }
     }
