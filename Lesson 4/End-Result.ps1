@@ -59,6 +59,12 @@ while(!(isValidIP $StartIP)){
 printPadding "Start IP Address:`r`n`t$StartIP"
 
 # prompt for end IP address
+while(!(isValidIP $EndIP)){
+    $EndIP = Read-Host "Enter end IP address"
+}
+
+printPadding "End IP Address:`r`n`t$EndIP"
+
 # prompt user for path to save results
 # perform the scan
 # output the result
