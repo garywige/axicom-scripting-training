@@ -66,7 +66,7 @@ class Test {
     }
 
     [void]Run(){
-        $result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1
+        $result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1 -TimeoutSeconds 1
         $this.isSuccess = $result.Status -eq "Success"
         Write-Host "$($this): $($this.isSuccess ? "PASS" : "FAIL")"
     }
@@ -145,52 +145,22 @@ $testCount += $EndIP.Octets[3] - $StartIP.Octets[3] + 1
 [int]$selector = 0
 for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
 
-    # calculate start of next octet
-    if($i -eq $StartIP.Octets[0]){
-        $jStart = $StartIP.Octets[1]
-    } else {
-        $jStart = 0
-    }
-
-    # calculate end of next octet
-    if($i -eq $EndIP.Octets[0]){
-        $jEnd = $EndIP.Octets[1]
-    } else {
-        $jEnd = 254
-    }
+    $jStart = $i -eq $StartIP.Octets[0] ? $StartIP.Octets[1] : 0
+    $jEnd = $i -eq $EndIP.Octets[0] ? $EndIP.Octets[1] : 254
 
     for([Byte]$j = $jStart; $j -le $jEnd; $j++){
 
-        if($j -eq $StartIP.Octets[1]){
-            $kStart = $StartIP.Octets[2]
-        } else {
-            $kStart = 0
-        }
-
-        if($j -eq $EndIP.Octets[1]){
-            $kEnd = $EndIP.Octets[2]
-        } else {
-            $kEnd = 254
-        }
+        $kStart = $j -eq $StartIP.Octets[1] ? $StartIP.Octets[2] : 0
+        $kEnd = $j -eq $EndIP.Octets[1] ? $EndIP.Octets[2] : 254
 
         for([Byte]$k = $kStart; $k -le $kEnd; $k++){
-
-            if($k -eq $StartIP.Octets[2]){
-                $lStart = $StartIP.Octets[3]
-            } else {
-                $lStart = 0
-            }
-
-            if($k -eq $EndIP.Octets[2]){
-                $lEnd = $EndIP.Octets[3]
-            } else {
-                $lEnd = 254
-            }
+            
+            $lStart = $k -eq $StartIP.Octets[2] ? $StartIP.Octets[3] : 0
+            $lEnd = $k -eq $EndIP.Octets[2] ? $EndIP.Octets[3] : 254
 
             for([Byte]$l = $lStart; $l -le $lEnd; $l++){
                 
                 $ipNew = [IPAddress]::new([Byte[]]@($i, $j, $k, $l))
-
                 $Tests[$selector++] = [Test]::new($ipNew)
             }
         }
@@ -204,7 +174,11 @@ foreach($test in $Tests){
 
 # output the result
 printPadding "These IP addresses are alive:"
+$output = ""
 $passed = $Tests.Where({$_.isSuccess})
 foreach($test in $passed){
-    Write-Output $test
+    $output += "$test`r`n"
 }
+
+Write-Host $output
+$output | Out-File -Path $OutputPath
