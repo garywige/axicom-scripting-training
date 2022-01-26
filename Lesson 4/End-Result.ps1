@@ -68,7 +68,7 @@ class Test {
     [void]Run(){
         $result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1
         $this.isSuccess = $result.Status -eq "Success"
-        Write-Debug "$this $($this.isSuccess)"
+        Write-Host "$($this): $($this.isSuccess ? "PASS" : "FAIL")"
     }
 
     [string]ToString(){
@@ -126,12 +126,8 @@ printPadding $title 2
 # prompt user for start IP address
 promptIP ([ref]$StartIP) "Start IP"
 
-Write-Debug "typeof StartIP: $($StartIP.GetType())"
-
 # prompt for end IP address
 promptIP ([ref]$EndIP) "End IP"
-
-Write-Debug "typeof EndIP: $($EndIP.GetType())"
 
 # validate that end IP address comes after start IP address
 if(!($EndIP.GreaterThan($StartIP))){
@@ -206,11 +202,8 @@ foreach($test in $Tests){
     $test.Run()
 }
 
-# wait a few seconds for tests to finish
-Start-Sleep -Seconds 5
-
 # output the result
-Write-Output "These IP addresses are alive:"
+printPadding "These IP addresses are alive:"
 $passed = $Tests.Where({$_.isSuccess})
 foreach($test in $passed){
     Write-Output $test
