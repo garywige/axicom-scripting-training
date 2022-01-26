@@ -76,6 +76,10 @@ class Test {
 
         return $true
     }
+
+    [string]ToString(){
+        return "$($this.ip): test successful"
+    }
 }
 
 # functions
@@ -140,32 +144,62 @@ if(!($EndIP.GreaterThan($StartIP))){
     Write-Error "End IP must come after Start IP, ending program..."
 }
 
-# perform the scan
-[int]$testCount = $EndIP.Octets[0] - $StartIP.Octets[0] + 1
-$testCount     *= $EndIP.Octets[1] - $StartIP.Octets[1] + 1
-$testCount     *= $EndIP.Octets[2] - $StartIP.Octets[2] + 1
-try{
-    $testCount     *= $EndIP.Octets[3] - $StartIP.Octets[3] + 1
-}
-catch{
-    Write-Error "Scanning the entire internet is not supported :P"
-    return
-}
-
+# Calculate the number of tests we need
+$testCount = ($EndIP.Octets[0] - $StartIP.Octets[0]) * [Math]::Pow(255, 3)
+$testCount += ($EndIP.Octets[1] - $StartIP.Octets[1]) * [Math]::Pow(255, 2)
+$testCount += ($EndIP.Octets[2] - $StartIP.Octets[2]) * 255
+$testCount += $EndIP.Octets[3] - $StartIP.Octets[3] + 1
 Write-Debug "Test count: $testCount"
 
+# Create array of tests for each IP in the range
 [Test[]]$Tests = [Test[]]::new($testCount)
-
 [int]$selector = 0
 for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
 
-    for([Byte]$j = $StartIP.Octets[1]; $j -le $EndIP.Octets[1]; $j++){
+    # calculate start of next octet
+    if($i -eq $StartIP.Octets[0]){
+        $jStart = $StartIP.Octets[1]
+    } else {
+        $jStart = 0
+    }
 
-        for([Byte]$k = $StartIP.Octets[2]; $k -le $EndIP.Octets[2]; $k++){
+    # calculate end of next octet
+    if($i -eq $EndIP.Octets[0]){
+        $jEnd = $EndIP.Octets[1]
+    } else {
+        $jEnd = 254
+    }
 
-            for([Byte]$l = $StartIP.Octets[3]; $l -le $EndIP.Octets[3]; $l++){
+    for([Byte]$j = $jStart; $j -le $jEnd; $j++){
+
+        if($j -eq $StartIP.Octets[1]){
+            $kStart = $StartIP.Octets[2]
+        } else {
+            $kStart = 0
+        }
+
+        if($j -eq $EndIP.Octets[1]){
+            $kEnd = $EndIP.Octets[2]
+        } else {
+            $kEnd = 254
+        }
+
+        for([Byte]$k = $kStart; $k -le $kEnd; $k++){
+
+            if($k -eq $StartIP.Octets[2]){
+                $lStart = $StartIP.Octets[3]
+            } else {
+                $lStart = 0
+            }
+
+            if($k -eq $EndIP.Octets[2]){
+                $lEnd = $EndIP.Octets[3]
+            } else {
+                $lEnd = 254
+            }
+
+            for([Byte]$l = $lStart; $l -le $lEnd; $l++){
                 
-                # TODO: potentially faulty logic: unless the last octet is 0-254, it will skip addresses outside of that range when iterating through the other octets
                 $ipNew = [IPAddress]::new([Byte[]]@($i, $j, $k, $l))
 
                 $Tests[$selector++] = [Test]::new($ipNew)
@@ -176,4 +210,12 @@ for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
     }
 }
 
+# start the tests
+foreach($test in $Tests){
+    $test.Run()
+}
+
 # output the result
+foreach($test in $Tests.Where({$_.isSuccess()})){
+    Write-Output $test
+}
