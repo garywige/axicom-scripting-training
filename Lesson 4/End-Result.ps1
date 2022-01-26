@@ -38,22 +38,25 @@ class IPAddress {
     }
 
     [Boolean]GreaterThan([IPAddress]$rhvalue){
-        # check if any octets are less than the other
-        for($i = 0; $i -lt $this.Octets.Count; $i++){
-            if($this.Octets[$i] -lt $rhvalue.Octets[$i]){
-                return $false
-            }
-        }
 
-        # now check to verify if any octets are greater than the other
+        [Boolean]$isGt = $false
+        [Boolean]$isLt = $false
+    
         for($i = 0; $i -lt $this.Octets.Count; $i++){
-            if($this.Octets[$i] -gt $rhvalue.Octets[$i]){
-                return $true
+
+            # check if any octets are less than the other
+            $isLt = $this.Octets[$i] -lt $rhvalue.Octets[$i]
+
+            # now check to verify if any octets are greater than the other
+            $isGt = $this.Octets[$i] -gt $rhvalue.Octets[$i]
+
+            if($isLt -or $isGt){
+                break
             }
         }
 
         # if the octets are equal, return false
-        return $false
+        return $isGt
     }
 }
 
