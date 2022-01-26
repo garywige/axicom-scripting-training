@@ -23,7 +23,7 @@ class IPAddress {
     IPAddress([string]$str){
         $parts = $str.Split('.')
         for($i = 0; $i -lt 4; $i++){
-            $this.Octets[$i] = [Byte]($parts[$i])
+            $this.Octets[$i] = [Byte]$parts[$i]
         }
     }
 
@@ -59,26 +59,26 @@ class IPAddress {
 
 class Test {
     [IPAddress]$ip
-    [object]$result
+    [Microsoft.PowerShell.Commands.TestConnectionCommand+PingStatus]$result
 
     Test([IPAddress]$ip){
         $this.ip = $ip
     }
 
     [void]Run(){
-        $this.result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1
+        $this.result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1 | Out-Null
     }
 
     [Boolean]isSuccess(){
-        if($null -eq $this.result -or $this.result.Status -ne "Success"){
-            return $false
-        }
+        #if($this.result?.Status -ne "Success"){
+        #    return $false
+        #}
 
         return $true
     }
 
     [string]ToString(){
-        return "$($this.ip): test successful"
+        return $this.ip
     }
 }
 
@@ -149,7 +149,6 @@ $testCount = ($EndIP.Octets[0] - $StartIP.Octets[0]) * [Math]::Pow(255, 3)
 $testCount += ($EndIP.Octets[1] - $StartIP.Octets[1]) * [Math]::Pow(255, 2)
 $testCount += ($EndIP.Octets[2] - $StartIP.Octets[2]) * 255
 $testCount += $EndIP.Octets[3] - $StartIP.Octets[3] + 1
-Write-Debug "Test count: $testCount"
 
 # Create array of tests for each IP in the range
 [Test[]]$Tests = [Test[]]::new($testCount)
@@ -203,8 +202,6 @@ for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
                 $ipNew = [IPAddress]::new([Byte[]]@($i, $j, $k, $l))
 
                 $Tests[$selector++] = [Test]::new($ipNew)
-
-                Write-Debug "New IP to scan: $ipNew"
             }
         }
     }
@@ -212,10 +209,19 @@ for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
 
 # start the tests
 foreach($test in $Tests){
-    $test.Run()
+    Write-Debug "$($test.ip) testing..."
+
+    $thread = {
+        param([Test]$a)
+        $a.Run()
+    }
+
+    Start-Job -ScriptBlock $thread -ArgumentList $test | Out-Null
 }
 
 # output the result
-foreach($test in $Tests.Where({$_.isSuccess()})){
+Write-Output "These IP addresses are alive:"
+$passed = $Tests.Where({$_.isSuccess()})
+foreach($test in $passed){
     Write-Output $test
 }
