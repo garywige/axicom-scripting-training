@@ -59,22 +59,16 @@ class IPAddress {
 
 class Test {
     [IPAddress]$ip
-    [Microsoft.PowerShell.Commands.TestConnectionCommand+PingStatus]$result
+    [Boolean]$isSuccess
 
     Test([IPAddress]$ip){
         $this.ip = $ip
     }
 
     [void]Run(){
-        $this.result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1 | Out-Null
-    }
-
-    [Boolean]isSuccess(){
-        #if($this.result?.Status -ne "Success"){
-        #    return $false
-        #}
-
-        return $true
+        $result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1
+        $this.isSuccess = $result.Status -eq "Success"
+        Write-Debug "$this $($this.isSuccess)"
     }
 
     [string]ToString(){
@@ -209,19 +203,15 @@ for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
 
 # start the tests
 foreach($test in $Tests){
-    Write-Debug "$($test.ip) testing..."
-
-    $thread = {
-        param([Test]$a)
-        $a.Run()
-    }
-
-    Start-Job -ScriptBlock $thread -ArgumentList $test | Out-Null
+    $test.Run()
 }
+
+# wait a few seconds for tests to finish
+Start-Sleep -Seconds 5
 
 # output the result
 Write-Output "These IP addresses are alive:"
-$passed = $Tests.Where({$_.isSuccess()})
+$passed = $Tests.Where({$_.isSuccess})
 foreach($test in $passed){
     Write-Output $test
 }
