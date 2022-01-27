@@ -150,6 +150,18 @@ class Test {
 
         return $tests
     }
+
+    static [void]Output([Test[]]$tests, [string]$savePath){
+        script:printPadding "These IP addresses are alive:"
+        $output = ""
+        $passed = $tests.Where({$_.isSuccess})
+        foreach($test in $passed){
+            $output += "$test`r`n"
+        }
+
+        Write-Host $output
+        $output | Out-File -Path $savePath
+    }
 }
 
 <#
@@ -178,12 +190,4 @@ $Tests.ForEach({
 })
 
 # output the result
-printPadding "These IP addresses are alive:"
-$output = ""
-$passed = $Tests.Where({$_.isSuccess})
-foreach($test in $passed){
-    $output += "$test`r`n"
-}
-
-Write-Host $output
-$output | Out-File -Path $OutputPath
+[Test]::Output($Tests, $OutputPath)
