@@ -156,7 +156,7 @@ class Test {
     ENTRY POINT
 #>
 # print title
-script:printPadding $title 2
+printPadding $title 2
 
 # prompt user for start IP address
 [IPAddress]::Prompt(([ref]$StartIP), "Start IP")
@@ -178,7 +178,7 @@ $Tests.ForEach({
 })
 
 # output the result
-script:printPadding "These IP addresses are alive:"
+printPadding "These IP addresses are alive:"
 $output = ""
 $passed = $Tests.Where({$_.isSuccess})
 foreach($test in $passed){
