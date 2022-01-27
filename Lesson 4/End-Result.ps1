@@ -17,17 +17,17 @@ $title += "`r`n"
 $title += "`t Powered by AXICOM"
 
 # functions
-function script:pad([int]$padding){
+function pad([int]$padding){
     $i = 0;
     while($i++ -lt $padding){
         Write-Host ""
     }
 }
 
-function script:printPadding([string]$str, [int]$padding = 1){
-    script:pad $padding
+function printPadding([string]$str, [int]$padding = 1){
+    pad $padding
     Write-Host $str
-    script:pad $padding
+    pad $padding
 }
 
 # classes

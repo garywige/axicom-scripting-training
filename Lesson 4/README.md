@@ -24,3 +24,72 @@ Before we do any coding, it's a good idea for you to familiarize yourself with t
 - Optionally specify a different output path for our saved results
 - Support for any private IP address range (which is typically a range where at least the first two octets are masked off)
 
+## Let's Begin
+
+Just like previous lessons, we have a *Start-Here.ps1* script that's been prepared with some initial comments for you to start with:
+
+```
+# script parameters
+# variables
+# functions
+# classes
+
+<#
+    ENTRY POINT
+#>
+# print title
+# prompt user for start IP address
+# prompt for end IP address
+# validate that end IP address comes after start IP address
+# generate tests
+# start the tests
+# output the result
+```
+
+You can go ahead and fill out the first few sections with this:
+
+```
+# script parameters
+param (
+    [string]$StartIP,
+    [string]$EndIP,
+    [string]$OutputPath = ".\results.txt"
+)
+
+# variables
+$DebugPreference = "Continue"
+
+$title  = "`t ################`r`n"
+$title += "`t #              #`r`n"
+$title += "`t #  IP Scanner  #`r`n"
+$title += "`t #              #`r`n"
+$title += "`t ################`r`n"
+$title += "`r`n"
+$title += "`t Powered by AXICOM"
+
+# functions
+function pad([int]$padding){
+    $i = 0;
+    while($i++ -lt $padding){
+        Write-Host ""
+    }
+}
+
+function printPadding([string]$str, [int]$padding = 1){
+    pad $padding
+    Write-Host $str
+    pad $padding
+}
+```
+
+And now you are able to print the title:
+
+```
+<#
+    ENTRY POINT
+#>
+# print title
+printPadding $title 2
+```
+
+And that just about summarizes the easy part of this lesson :laugh:
