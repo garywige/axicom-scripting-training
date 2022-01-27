@@ -92,4 +92,42 @@ And now you are able to print the title:
 printPadding $title 2
 ```
 
-And that just about summarizes the easy part of this lesson :laugh:
+And that just about summarizes the easy part of this lesson!
+
+## Classes
+
+Our next two sections are charging us to:
+
+```
+# prompt user for start IP address
+# prompt for end IP address
+```
+
+Grabbing the input is simple enough, but we have to validate that the input is an actual IP address. Later on in the script, we will also need to generate IP addresses between the range. This is going to be difficult to do if we are working with strings! We can make this a whole lot easier if we have a way to model an IP address with a type that we can convert our strings to. Behold, the **class**:
+
+```
+class MyClass {
+
+    # properties
+    [int]$var1
+    [int]$var2
+
+    # default constructor
+    MyClass(){
+        $this.var1 = 0
+        $this.var2 = 0
+    }
+
+    myMethod(){
+        Write-Host "Hello, World!"
+    }
+}
+```
+
+Above, we have a **class** named *MyClass* that has 2 member variables named *var1* and *var2*. These are commonly referred to as **properties**. The area below the properties is called a **constructor**. A constructor always has the same name as the class. This particular constructor is called a **default constructor** because it doesn't accept any arguments. A constructor gets called when your class is used to create an object, and it's your opportunity to ensure that all properties are initialized. To store an instance of your class in a variable, you would need to call the constructor with the **new** static method like this:
+
+```
+$myInstance = [MyClass]::new()
+```
+
+Notice that we didn't provide any parameters to **new**. That's only because our constructor doesn't take any parameters. If our constructor takes parameters, we must specify the parameters in the parameter block of the **new** method.
