@@ -77,6 +77,43 @@ class Test {
     [string]ToString(){
         return $this.ip
     }
+
+    static [Test[]] GenerateTests([IPAddress]$start, [IPAddress]$end) {
+        # Calculate the number of tests we need
+        $testCount = ($end.Octets[0] - $start.Octets[0]) * [Math]::Pow(255, 3)
+        $testCount += ($end.Octets[1] - $start.Octets[1]) * [Math]::Pow(255, 2)
+        $testCount += ($end.Octets[2] - $start.Octets[2]) * 255
+        $testCount += $end.Octets[3] - $start.Octets[3] + 1
+
+        # generate a test for each IP
+        $tests = [Test[]]::new($testCount)
+        [int]$selector = 0
+        for([Byte]$i = $start.Octets[0]; $i -le $end.Octets[0]; $i++){
+
+            $jStart = $i -eq $start.Octets[0] ? $start.Octets[1] : 0
+            $jEnd = $i -eq $end.Octets[0] ? $end.Octets[1] : 254
+
+            for([Byte]$j = $jStart; $j -le $jEnd; $j++){
+
+                $kStart = $j -eq $start.Octets[1] ? $start.Octets[2] : 0
+                $kEnd = $j -eq $end.Octets[1] ? $end.Octets[2] : 254
+
+                for([Byte]$k = $kStart; $k -le $kEnd; $k++){
+            
+                    $lStart = $k -eq $start.Octets[2] ? $start.Octets[3] : 0
+                    $lEnd = $k -eq $end.Octets[2] ? $end.Octets[3] : 254
+
+                    for([Byte]$l = $lStart; $l -le $lEnd; $l++){
+                
+                        $ipNew = [IPAddress]::new([Byte[]]@($i, $j, $k, $l))
+                        $tests[$selector++] = [Test]::new($ipNew)
+                    }
+                }
+            }
+        }
+
+        return $tests
+    }
 }
 
 # functions
@@ -133,42 +170,12 @@ promptIP ([ref]$StartIP) "Start IP"
 promptIP ([ref]$EndIP) "End IP"
 
 # validate that end IP address comes after start IP address
-if(!($EndIP.GreaterThan($StartIP))){
+if(!(([IPAddress]$EndIP).GreaterThan($StartIP))){
     Write-Error "End IP must come after Start IP, ending program..."
 }
 
-# Calculate the number of tests we need
-$testCount = ($EndIP.Octets[0] - $StartIP.Octets[0]) * [Math]::Pow(255, 3)
-$testCount += ($EndIP.Octets[1] - $StartIP.Octets[1]) * [Math]::Pow(255, 2)
-$testCount += ($EndIP.Octets[2] - $StartIP.Octets[2]) * 255
-$testCount += $EndIP.Octets[3] - $StartIP.Octets[3] + 1
-
-# Create array of tests for each IP in the range
-[Test[]]$Tests = [Test[]]::new($testCount)
-[int]$selector = 0
-for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
-
-    $jStart = $i -eq $StartIP.Octets[0] ? $StartIP.Octets[1] : 0
-    $jEnd = $i -eq $EndIP.Octets[0] ? $EndIP.Octets[1] : 254
-
-    for([Byte]$j = $jStart; $j -le $jEnd; $j++){
-
-        $kStart = $j -eq $StartIP.Octets[1] ? $StartIP.Octets[2] : 0
-        $kEnd = $j -eq $EndIP.Octets[1] ? $EndIP.Octets[2] : 254
-
-        for([Byte]$k = $kStart; $k -le $kEnd; $k++){
-            
-            $lStart = $k -eq $StartIP.Octets[2] ? $StartIP.Octets[3] : 0
-            $lEnd = $k -eq $EndIP.Octets[2] ? $EndIP.Octets[3] : 254
-
-            for([Byte]$l = $lStart; $l -le $lEnd; $l++){
-                
-                $ipNew = [IPAddress]::new([Byte[]]@($i, $j, $k, $l))
-                $Tests[$selector++] = [Test]::new($ipNew)
-            }
-        }
-    }
-}
+# generate tests
+$Tests = [Test]::GenerateTests($StartIP, $EndIP) 
 
 # start the tests
 $Tests.ForEach({
