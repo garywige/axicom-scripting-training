@@ -17,7 +17,7 @@ $title += "`r`n"
 $title += "`t Powered by AXICOM"
 
 # classes
-class IPAddress {
+class IPAddress : System.IComparable {
     [Byte[]]$Octets = [Byte[]]::new(4)
 
     IPAddress([string]$str){
@@ -37,26 +37,31 @@ class IPAddress {
         return ("{0}.{1}.{2}.{3}" -f $this.Octets[0], $this.Octets[1], $this.Octets[2], $this.Octets[3])
     }
 
-    [Boolean]GreaterThan([IPAddress]$rhvalue){
+    [int]CompareTo([object]$rhs){
 
-        [Boolean]$isGt = $false
-        [Boolean]$isLt = $false
-    
+        # iterate through each octet
         for($i = 0; $i -lt $this.Octets.Count; $i++){
 
-            # check if any octets are less than the other
-            $isLt = $this.Octets[$i] -lt $rhvalue.Octets[$i]
+            # if any octet isn't equal
+            if($this.Octets[$i] -ne ([IPAddress]$rhs).Octets[$i]){
 
-            # now check to verify if any octets are greater than the other
-            $isGt = $this.Octets[$i] -gt $rhvalue.Octets[$i]
-
-            if($isLt -or $isGt){
-                break
+                # which one is greater
+                return $this.Octets[$i] -gt ([IPAddress]$rhs).Octets[$i] ? 1 : -1
             }
         }
 
-        # if the octets are equal, return false
-        return $isGt
+        # octets are equal
+        return 0
+    }
+
+    static [void]Prompt([ref]$ip, [string]$name){
+        while(!(isValidIP $ip.Value)){
+            $ip.Value = Read-Host "Enter $name"
+        }
+    
+        $ip.Value = [IPAddress]::new($ip.Value)
+    
+        printPadding "$($name):`r`n`t$($ip.Value)"
     }
 }
 
@@ -147,16 +152,6 @@ function isValidIP([string]$str){
     return $true
 }
 
-function promptIP([ref]$ip, [string]$name){
-    while(!(isValidIP $ip.Value)){
-        $ip.Value = Read-Host "Enter $name"
-    }
-
-    $ip.Value = [IPAddress]::new($ip.Value)
-
-    printPadding "$($name):`r`n`t$($ip.Value)"
-}
-
 <#
     ENTRY POINT
 #>
@@ -164,13 +159,13 @@ function promptIP([ref]$ip, [string]$name){
 printPadding $title 2
 
 # prompt user for start IP address
-promptIP ([ref]$StartIP) "Start IP"
+[IPAddress]::Prompt(([ref]$StartIP), "Start IP")
 
 # prompt for end IP address
-promptIP ([ref]$EndIP) "End IP"
+[IPAddress]::Prompt(([ref]$EndIP), "End IP")
 
 # validate that end IP address comes after start IP address
-if(!(([IPAddress]$EndIP).GreaterThan($StartIP))){
+if(!(([IPAddress]$EndIP) -gt $StartIP)){
     Write-Error "End IP must come after Start IP, ending program..."
 }
 
