@@ -126,6 +126,13 @@ class Test {
         [int]$selector = 0
         for([Byte]$i = $start.Octets[0]; $i -le $end.Octets[0]; $i++){
 
+            <#
+                If this octet's value is equal with $start.Octets[0], then the next octet must have a minimum value of $start.Octets[1]. 
+                Otherwise, the minimum is 0.
+
+                Likewise, if this octet's value is equal with $end.Octets[0], then the next octet of this IP address must also have a 
+                maximum value of $end.Octets[1]. Otherwise, the maximum value of that octet is 254.
+            #>
             $jStart = $i -eq $start.Octets[0] ? $start.Octets[1] : 0
             $jEnd = $i -eq $end.Octets[0] ? $end.Octets[1] : 254
 
