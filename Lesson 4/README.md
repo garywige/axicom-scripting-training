@@ -118,6 +118,7 @@ class MyClass {
         $this.var2 = 0
     }
 
+    # method
     myMethod(){
         Write-Host "Hello, World!"
     }
@@ -131,3 +132,5 @@ $myInstance = [MyClass]::new()
 ```
 
 Notice that we didn't provide any parameters to **new**. That's only because our constructor doesn't take any parameters. If our constructor takes parameters, we must specify the parameters in the parameter block of the **new** method.
+
+Below our constructor, you see a **method**. A method is basically just a function that is a member of a class. You have been calling methods in previous lessons already, so you should be partially familiar with how to use them. For example, the **GetType** method was used in last lesson to verify that we were working with FileInfo. **GetType** is one method that all .NET classes inherit, along with **ToString**. The latter, you can customize to suit your needs. Customizing an inherited method is called **overriding** and we will be doing some of that in this lesson.
