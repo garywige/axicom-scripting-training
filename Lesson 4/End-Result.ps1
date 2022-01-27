@@ -113,7 +113,7 @@ function promptIP([ref]$ip, [string]$name){
     }
 
     $ip.Value = [IPAddress]::new($ip.Value)
-    
+
     printPadding "$($name):`r`n`t$($ip.Value)"
 }
 
@@ -168,9 +168,9 @@ for([Byte]$i = $StartIP.Octets[0]; $i -le $EndIP.Octets[0]; $i++){
 }
 
 # start the tests
-foreach($test in $Tests){
-    $test.Run()
-}
+$Tests.ForEach({
+    $_.Run()
+})
 
 # output the result
 printPadding "These IP addresses are alive:"
