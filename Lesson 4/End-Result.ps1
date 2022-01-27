@@ -16,6 +16,20 @@ $title += "`t ################`r`n"
 $title += "`r`n"
 $title += "`t Powered by AXICOM"
 
+# functions
+function script:pad([int]$padding){
+    $i = 0;
+    while($i++ -lt $padding){
+        Write-Host ""
+    }
+}
+
+function script:printPadding([string]$str, [int]$padding = 1){
+    script:pad $padding
+    Write-Host $str
+    script:pad $padding
+}
+
 # classes
 class IPAddress : System.IComparable {
     [Byte[]]$Octets = [Byte[]]::new(4)
@@ -54,14 +68,31 @@ class IPAddress : System.IComparable {
         return 0
     }
 
+    static [Boolean]isValidIP([string]$str){
+        if(!($str -match "^(\d{1,3}\.){3}\d{1,3}$")){
+            return $false
+        }
+    
+        $parts = $str.Split('.')
+    
+        foreach($part in $parts){
+            $n = [int]$part
+            if($n -gt 254){
+                return $false
+            }
+        }
+    
+        return $true
+    }
+
     static [void]Prompt([ref]$ip, [string]$name){
-        while(!(isValidIP $ip.Value)){
+        while(!([IPAddress]::isValidIP($ip.Value))){
             $ip.Value = Read-Host "Enter $name"
         }
     
         $ip.Value = [IPAddress]::new($ip.Value)
     
-        printPadding "$($name):`r`n`t$($ip.Value)"
+        script:printPadding "$($name):`r`n`t$($ip.Value)"
     }
 }
 
@@ -121,42 +152,11 @@ class Test {
     }
 }
 
-# functions
-function pad([int]$padding){
-    $i = 0;
-    while($i++ -lt $padding){
-        Write-Output ""
-    }
-}
-
-function printPadding([string]$str, [int]$padding = 1){
-    pad $padding
-    Write-Output $str
-    pad $padding
-}
-
-function isValidIP([string]$str){
-    if(!($str -match "^(\d{1,3}\.){3}\d{1,3}$")){
-        return $false
-    }
-
-    $parts = $str.Split('.')
-
-    foreach($part in $parts){
-        $n = [int]$part
-        if($n -gt 254){
-            return $false
-        }
-    }
-
-    return $true
-}
-
 <#
     ENTRY POINT
 #>
 # print title
-printPadding $title 2
+script:printPadding $title 2
 
 # prompt user for start IP address
 [IPAddress]::Prompt(([ref]$StartIP), "Start IP")
@@ -178,7 +178,7 @@ $Tests.ForEach({
 })
 
 # output the result
-printPadding "These IP addresses are alive:"
+script:printPadding "These IP addresses are alive:"
 $output = ""
 $passed = $Tests.Where({$_.isSuccess})
 foreach($test in $passed){
