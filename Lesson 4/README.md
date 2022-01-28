@@ -4,6 +4,8 @@
 
 In the previous lesson, you learned how to create a practical script example using the scripting knowledge that you've gained up to this point. In this lesson, you are going to learn about **Classes** and how you can use them to further organize your code. Throughout the lesson, we will be building a new practical script example that scans a specified IP address range with ICMP packets to tell us if there is a device at that IP address or not.
 
+There are some features used in this lesson that are relatively new as of this writing. You should have at least PowerShell version 7.2 LTS installed for this lesson, which you can download [here](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2)
+
 ## Script Design
 
 Before we do any coding, it's a good idea for you to familiarize yourself with the design that we've come up with for this one. I won't elaborate on the research that might have gone into this one as you should have a good idea about how to conduct that yourself now when you have to. 
@@ -150,6 +152,10 @@ class IPAddress {
             $this.Octets[$i] = [Byte]$parts[$i]
         }
     }
+
+    [string]ToString(){
+        return ("{0}.{1}.{2}.{3}" -f $this.Octets[0], $this.Octets[1], $this.Octets[2], $this.Octets[3])
+    }
 }
 ```
 
@@ -275,3 +281,52 @@ Also, when calling the method, you are required to cast the variable to `[ref]`:
 ```
 
 You can test your script again and make sure the values are what you are expecting this time.
+
+## Inheritance
+
+Our next section charges us to `# validate that end IP address comes after start IP address`. An intuitive way to do this would be to have something like this:
+
+```
+# validate that end IP address comes after start IP address
+if(!($EndIP -gt $StartIP)){
+    Write-Error "End IP must come after Start IP, ending program..."
+}
+```
+
+That seems intuitive enough, but will it work? Go ahead and add that in and test it. You should have received a runtime error that they can't be compared because it is not *IComparable*. Typically, if you see a type name begin with a capital 'I', it's because it's a class **interface**. Interfaces are very useful. Interfaces allow programmers to implement code features without knowing much about the classes that will be using those features. In this case, we can see that the `-gt` operator (code feature) supports the interface *IComparable*. If we want our class to support use of the comparison operators, we have to have our class **inherit** from the interface and **override** its methods. Take a look a the [System.IComparable](https://docs.microsoft.com/en-us/dotnet/api/system.icomparable?view=net-6.0) documentation for details on how this is implemented. This particular interface has a single method named *CompareTo* that returns 0 if the values are equal, 1 if **this** is greater than the parameter, or -1 if **this** is less than the parameter. To inherit from the interface, modify your class declaration like so:
+
+```
+class IPAddress : System.IComparable {
+    ...
+}
+```
+
+Now, to implement the interface, we can add the *CompareTo* method below *ToString*:
+
+```
+[int]CompareTo([object]$rhs){
+
+    # iterate through each octet
+    for($i = 0; $i -lt $this.Octets.Count; $i++){
+
+        # if any octet isn't equal
+        if($this.Octets[$i] -ne ([IPAddress]$rhs).Octets[$i]){
+
+            # which one is greater
+            return $this.Octets[$i] -gt ([IPAddress]$rhs).Octets[$i] ? 1 : -1
+        }
+    }
+
+    # octets are equal
+    return 0
+}
+```
+
+Alright, now let's see if it makes the scripting engine happy. At the time of this writing, I encountered an occasional bug where the scripting engine doesn't appear to recognize that *EndIP* is an *IPAddress* and not a *string*. to get around this, I cast *EndIP* to an *IPAddress* and that seems to have silenced the bug:
+
+```
+# validate that end IP address comes after start IP address
+if(!(([IPAddress]$EndIP) -gt $StartIP)){
+    Write-Error "End IP must come after Start IP, ending program..."
+}
+```
