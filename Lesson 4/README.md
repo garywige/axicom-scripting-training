@@ -379,19 +379,6 @@ static [Test[]] GenerateTests([IPAddress]$start, [IPAddress]$end) {
 This method needs to create an array of *Test* objects for each IP address in the range. Before we can generate the tests, we need to initialize the array, which means we have to know how many tests there are going to be. Yes, there is going to be some *math* involved! Sometimes, logic like this can take some trial and error to get right. I originally came up with a faulty algorithm for this that limited the range for each octet to be within the *StartIP* and *EndIP* values. That didn't work well. If we wanted to simplify the test generation logic, we could make it really easy by choosing to only support the typical class C range where only the last octet is different. But, I wanted to be able to support larger ranges than that. The final algorithm that I came up with for generating a test count is this
 
 ```
-x = (end~1~ - start~1~) * 255^3^ + (end~2~ - start~2~) * 255^2^ + (end~3~ - start~3~) * 255^1^ + (end~4~ - start~4~) * 255^0^ + 1
-```
-
-which can be reduced to
-
-```
-
-x = (end<sub>1</sub> - start<sub>1</sub>) * 255<sup>3</sup> + (end<sub>2</sub> - start<sub>2</sub>) * 255<sup>2</sup> + (end<sub>3<sub> - start<sub>3</sub>) * 255 + (end<sub>4</sub> - start<sub>4</sub>) + 1
-```
-
-And the actual code form we can put in our static method:
-
-```
 # Calculate the number of tests we need
 $testCount = ($end.Octets[0] - $start.Octets[0]) * [Math]::Pow(255, 3)
 $testCount += ($end.Octets[1] - $start.Octets[1]) * [Math]::Pow(255, 2)
