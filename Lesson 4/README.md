@@ -364,4 +364,15 @@ class Test {
 }
 ```
 
-We have two properties, *ip* and *isSuccess*. 
+We have two properties, *ip* and *isSuccess*, as well as a single constructor, and an override of the *ToString* method. This class is going to grow by quite a few lines by the end of this lesson.
+
+## GenerateTests Method
+
+Right below the *ToString* method, let's add a new static method declaration:
+
+```
+static [Test[]] GenerateTests([IPAddress]$start, [IPAddress]$end) {
+    throw "not implemented"
+}
+```
+
