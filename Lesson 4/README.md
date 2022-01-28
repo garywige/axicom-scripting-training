@@ -161,7 +161,7 @@ We could have saved the initialization part (`... = [Byte[]]::new(4)`) for the c
 
 Let's focus our attention on what this constructor is doing now. We are taking a string *str* as a parameter here so that we can easily convert from string to IPAddress after validation. The `[string]` type has a *Split* method that we utilize here. The split method takes a single character as a parameter, which it uses to split up the string into an array of strings. Each '.' in our IP address string will mark where the string gets split at, so we should end up with 4 string representations of numbers. We iterate through the array and cast each string into its final form, storing it in the *Octets* array. Note that this constructor doesn't do any validation. It trusts 100% that the data being passed into it has already been validated. That is important to keep in mind when using this class because it means we need to implement validation outside of the constructor. Notice that we are using the **this** keyword to reference the *Octets* array. In PowerShell, you must use the **this** keyword to reference the class members in the constructors as well as the methods.
 
-** Static Methods
+## Static Methods
 
 Now, let's add some validation logic to the class. This particular method is going to take a string as a parameter and then it's going to spit out a Boolean value telling us whether its a valid format for an IP address. Since it doesn't need to interact with any class members, but it is certainly related to the `[IPAddress]` type that we're creating, we're going to make it a **static method**. Static methods are like utility functions related to a particular type. Underneath the constructor, put this in:
 
