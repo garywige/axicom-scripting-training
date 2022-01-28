@@ -415,7 +415,7 @@ $jStart = $i -eq $start.Octets[0] ? $start.Octets[1] : 0
 $jEnd = $i -eq $end.Octets[0] ? $end.Octets[1] : 254
 ```
 
-Okay, and now for the entire set of nested loops. Please don't stress if this gives you a headache. This took a lot of trial and error on my part and it's okay if it doesn't make sense right away. But, you should take a look at how these start and end values are used to manipulate the loop because it reveals the usefulness of the class for loop.
+Okay, and now for the entire set of nested loops. Please don't stress if this gives you a headache. This took a lot of trial and error on my part and it's okay if it doesn't make sense right away. But, you should take a look at how these start and end values are used to manipulate the loop because it reveals the usefulness of the for loop.
 
 ```
 # generate a test for each IP
