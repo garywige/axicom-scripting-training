@@ -92,7 +92,7 @@ class IPAddress : System.IComparable {
     
         $ip.Value = [IPAddress]::new($ip.Value)
     
-        script:printPadding "$($name):`r`n`t$($ip.Value)"
+        printPadding "$($name):`r`n`t$($ip.Value)"
     }
 }
 
