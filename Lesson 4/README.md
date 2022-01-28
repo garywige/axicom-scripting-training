@@ -322,6 +322,8 @@ Now, to implement the interface, we can add the *CompareTo* method below *ToStri
 }
 ```
 
+## Overloading
+
 Alright, now let's see if it makes the scripting engine happy. At the time of this writing, I encountered an occasional bug where the scripting engine doesn't appear to recognize that *EndIP* is an *IPAddress* and not a *string*. to get around this, I cast *EndIP* to an *IPAddress* and that seems to have silenced the bug:
 
 ```
@@ -330,3 +332,36 @@ if(!(([IPAddress]$EndIP) -gt $StartIP)){
     Write-Error "End IP must come after Start IP, ending program..."
 }
 ```
+
+In order for the cast to work though, you need a second version of your constructor that takes an *IPAddress* as a parameter:
+
+```
+IPAddress([Byte[]]$ip){
+    for($i = 0; $i -lt 4; $i++){
+        $this.Octets[$i] = $ip[$i]
+    }
+}
+```
+
+Having multiple versions of a function, method, or constructor that takes different parameters is called **overloading** and it comes in handy sometimes.
+
+## Test Class
+
+Let's start a new class declaration under our *IPAddress* class:
+
+```
+class Test {
+    [IPAddress]$ip
+    [Boolean]$isSuccess
+
+    Test([IPAddress]$ip){
+        $this.ip = $ip
+    }
+
+    [string]ToString(){
+        return $this.ip
+    }
+}
+```
+
+We have two properties, *ip* and *isSuccess*. 
