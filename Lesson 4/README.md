@@ -175,4 +175,50 @@ static [Boolean]isValidIP([string]$str){
 
 To validate our IP address string, we need to verify that it follows a particular string pattern. If you think about, an IP address is pretty recognizable when you see one. Every IPv4 address has 3 '.' characters that are seperating numbers that can be any value between 0 and 254 inclusive. Because an IP address has such a recognizable pattern, we can use something called a **regular expression** to test whether it matches that pattern. It doesn't take care of the validation 100%, but at least it will do the hardest part for us. We can use the *split* method to do the rest after we've verified that it actually has the '.' characters the *split* method will depend on. 
 
-Regular expressions are a subject of their own and I won't be going into them in exhaustive detail. You can usually get by with a cheatsheet and some experimentation with a regex tester. I will explain how I came up with the pattern for this script. To start, open [this site](https://www.regextester.com/) up in a separate web browser tab. This can be used to test an expression on a test string. In the section below titled *Test String*, enter `1.12.123.12`. Now, in the top field, enter `\d`. You should see all of the digits highlighted. That's because `\d` matches all digits. Now, modify the top field to be `\d{3}`. You should now only see the 3rd octet highlighted. That's because the `{3}` is communicating that there are 3 consecutive digits. Now, let's make it `\d{1,3}`. All digits are highlighted now. Now we can add the dot by adding `.\` to the very end of the expression. Of course, it does not match the last octet because it is not suffixed by a dot. But, we at least have an expression that matches the first 3 sections and we are going to use this.
+Regular expressions are a subject of their own and I won't be going into them in exhaustive detail. You can usually get by with a cheatsheet and some experimentation with a regex tester. I will explain how I came up with the pattern for this script. To start, open [this site](https://www.regextester.com/) up in a separate web browser tab. This can be used to test an expression on a test string. In the section below titled *Test String*, enter `1.12.123.12`. Now, in the top field, enter `\d`. You should see all of the digits highlighted. That's because `\d` matches all digits. Now, modify the top field to be `\d{3}`. You should now only see the 3rd octet highlighted. That's because the `{3}` is communicating that there are 3 consecutive digits. Now, let's make it `\d{1,3}`. All digits are highlighted now. Now we can add the dot by adding `.\` to the very end of the expression. Of course, it does not match the last octet because it is not suffixed by a dot. But, we at least have an expression that matches the first 3 sections and we are going to use this. Now, let's enclose our expression in parenthesis and specify that there are 3 instances of this expression, like so: `(\d{1,3}\.){3}`. You should see the first 3 octets highlighted along with the third dot. Now, we add `\d{1,3}` to the end of that and the whole thing should be highlighted now:
+
+```
+(\d{1,3}\.){3}\d{1,3}
+```
+
+Okay, that's great, but there is a problem with this that we're not seeing with the test string. Edit your test string so it looks like this: `cat1.12.123.12dog`. You'll notice that the string is still being highlighted because there's a pattern match. This will pass validation, which is not what we want. To fix this problem, we're going to prefix our pattern with '^' and suffix it with '$', which will symbolize the beginning and ending of the string respectively:
+
+```
+^(\d{1,3}\.){3}\d{1,3}$
+```
+
+Now, it doesn't match our invalid string. If you edit the test string back to what it was, it should now be highlighted. Congratulations, you now know how to construct a regular expression for validation. If you need to construct regular expressions in the future, you can use a cheat sheet like [this one](https://cheatography.com/davechild/cheat-sheets/regular-expressions/) for reference if you need to. You can also see if someone has already constructed the pattern you're looking for, but it's a good idea to test the pattern to make sure it functions like you need it to.
+
+Now that we have a working pattern, we can update our static method to look like this:
+
+```
+static [Boolean]isValidIP([string]$str){
+    if(!($str -match "^(\d{1,3}\.){3}\d{1,3}$")){
+        return $false
+    }
+    
+    return $true
+}
+```
+
+Okay, now we have some pretty good input validation. But, our user could outsmart this by enter a string like '999.999.999.999' and this method would let it slide. So, we'll add a second validation that splits the string into 4 numbers that can be verified to be between 0 and 254:
+
+```
+static [Boolean]isValidIP([string]$str){
+    if(!($str -match "^(\d{1,3}\.){3}\d{1,3}$")){
+        return $false
+    }
+    
+    $parts = $str.Split('.')
+    
+    foreach($part in $parts){
+        $n = [int]$part
+        if($n -gt 254){
+            return $false
+        }
+    }
+    
+    return $true
+}
+```
+
