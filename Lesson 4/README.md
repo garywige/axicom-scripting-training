@@ -386,7 +386,7 @@ which can be reduced to
 
 ```
 
-x = (end~1~ - start~1~) * 255^3^ + (end~2~ - start~2~) * 255^2^ + (end~3~ - start~3~) * 255 + (end~4~ - start~4~) + 1
+x = (end<sub>1</sub> - start<sub>1</sub>) * 255<sup>3</sup> + (end<sub>2</sub> - start<sub>2</sub>) * 255<sup>2</sup> + (end<sub>3<sub> - start<sub>3</sub>) * 255 + (end<sub>4</sub> - start<sub>4</sub>) + 1
 ```
 
 And the actual code form we can put in our static method:
