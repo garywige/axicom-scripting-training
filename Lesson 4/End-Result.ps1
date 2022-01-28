@@ -159,7 +159,7 @@ class Test {
     }
 
     static [void]Output([Test[]]$tests, [string]$savePath){
-        script:printPadding "These IP addresses are alive:"
+        printPadding "These IP addresses are alive:"
         $output = ""
         $passed = $tests.Where({$_.isSuccess})
         foreach($test in $passed){
