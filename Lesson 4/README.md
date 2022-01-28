@@ -385,3 +385,72 @@ $testCount += ($end.Octets[1] - $start.Octets[1]) * [Math]::Pow(255, 2)
 $testCount += ($end.Octets[2] - $start.Octets[2]) * 255
 $testCount += $end.Octets[3] - $start.Octets[3] + 1
 ```
+
+Okay, so now we need to populate our array with every possible IP address in this range. We do this by using nested for loops. Each loop is responsible for generating the value of one of the octets. For the last 3 octets, the start and end values will depend on whether the previous octet is at it's first or last value. Why? Because if the previous octet is not on either its first or last value, then this octet needs to iterate through all of the values between 0 and 254 inclusive. Originally, I implemented this using a couple of if/else blocks in each loop:
+
+```
+if($i -eq $start.Octets[0]){
+    $jStart = $start.Octets[1]
+} else {
+    $jStart = 0
+}
+
+if($i -eq $end.Octets[0]){
+    $jEnd = $end.Octets[1]
+} else {
+    $jEnd = 254
+}
+```
+
+That gets really messy having to do this in 3 nested loops. Thankfully, if you installed PowerShell 7.2 like I advised at the beginning of the lesson, we can use the *ternary operator* to simplify the logic a bit. The ternary operator works great for cases like this where you need to assign a different value depending on whether a conditional statement is true or false. This is their syntax:
+
+```
+x = <boolean statement> ? <value if true> : <value if false>
+```
+
+So, we can easily translate the previous if/else statements into this:
+
+```
+$jStart = $i -eq $start.Octets[0] ? $start.Octets[1] : 0
+$jEnd = $i -eq $end.Octets[0] ? $end.Octets[1] : 254
+```
+
+Okay, and now for the entire set of nested loops. Please don't stress if this gives you a headache. This took a lot of trial and error on my part and it's okay if it doesn't make sense right away. But, you should take a look at how these start and end values are used to manipulate the loop because it reveals the usefulness of the class for loop.
+
+```
+# generate a test for each IP
+$tests = [Test[]]::new($testCount)
+[int]$selector = 0
+for([Byte]$i = $start.Octets[0]; $i -le $end.Octets[0]; $i++){
+
+    $jStart = $i -eq $start.Octets[0] ? $start.Octets[1] : 0
+    $jEnd = $i -eq $end.Octets[0] ? $end.Octets[1] : 254
+
+    for([Byte]$j = $jStart; $j -le $jEnd; $j++){
+
+        $kStart = $j -eq $start.Octets[1] ? $start.Octets[2] : 0
+        $kEnd = $j -eq $end.Octets[1] ? $end.Octets[2] : 254
+
+        for([Byte]$k = $kStart; $k -le $kEnd; $k++){
+            
+            $lStart = $k -eq $start.Octets[2] ? $start.Octets[3] : 0
+            $lEnd = $k -eq $end.Octets[2] ? $end.Octets[3] : 254
+
+            for([Byte]$l = $lStart; $l -le $lEnd; $l++){
+                
+                $ipNew = [IPAddress]::new([Byte[]]@($i, $j, $k, $l))
+                $tests[$selector++] = [Test]::new($ipNew)
+            }
+        }
+    }
+}
+
+return $tests
+```
+
+Don't forget to `return $tests` at the very end. With that class feature fully implemented, we can now use it to populate a test array:
+
+```
+# generate tests
+$Tests = [Test]::GenerateTests($StartIP, $EndIP) 
+```
