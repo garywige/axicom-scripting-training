@@ -222,3 +222,56 @@ static [Boolean]isValidIP([string]$str){
 }
 ```
 
+## Passing Parameters by Reference
+
+Okay, let's add a new static method to the class right below *isValidIP*:
+
+```
+static [void]Prompt($ip, [string]$name){
+    while(!([IPAddress]::isValidIP($ip))){
+        $ip = Read-Host "Enter $name"
+    }
+    
+    $ip = [IPAddress]::new($ip)
+    
+    printPadding "$($name):`r`n`t$($ip)"
+}
+```
+
+This should be relatively self-explanatory. We're using the static method *isValidIP* that we just created in the last section to validate that *ip* is in the format we need it to be in. After that's done, it's passed to the *IPAddress* constructor and then stored back in our *ip* variable. There's an issue with this logic though that doesn't become apparent until you try using the method. Let's add this to our implementation section so we can test:
+
+```
+# prompt user for start IP address
+[IPAddress]::Prompt($StartIP, "Start IP")
+Write-Debug "Start IP = $StartIP"
+
+# prompt for end IP address
+[IPAddress]::Prompt($EndIP, "End IP")
+Write-Debug "End IP = $EndIP"
+```
+
+Test your program and see what it does. Did your debug message output what the prompt should have ended up with? The reason that it seems like the prompt didn't store the value we got from the user is because some types are copied when passed into a parameter list. Some types are called **reference types** and they can successfully be passed by reference into a function without doing anything special. Objects (instances of classes) are reference types. PowerShell strings are not reference types. The other issue here is that are are changing the type of the variable. We can force PowerShell to pass a variable by reference by specifying it as the `[ref]` type. You also need to work with the value of the variable by using the *Value* property. Behold, our new version of *Prompt*:
+
+```
+static [void]Prompt([ref]$ip, [string]$name){
+    while(!([IPAddress]::isValidIP($ip.Value))){
+        $ip.Value = Read-Host "Enter $name"
+    }
+    
+    $ip.Value = [IPAddress]::new($ip.Value)
+    
+    printPadding "$($name):`r`n`t$($ip.Value)"
+}
+```
+
+Also, when calling the method, you are required to cast the variable to `[ref]`:
+
+```
+# prompt user for start IP address
+[IPAddress]::Prompt(([ref]$StartIP), "Start IP")
+
+# prompt for end IP address
+[IPAddress]::Prompt(([ref]$EndIP), "End IP")
+```
+
+You can test your script again and make sure the values are what you are expecting this time.
