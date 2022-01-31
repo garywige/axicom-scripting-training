@@ -334,6 +334,14 @@ Now, to implement the interface, we can add the *CompareTo* method below *ToStri
 }
 ```
 
+To decide `# which one is greater`, we are using something called the *ternary operator* that works as an alternative to some if/else block combinations. It's relatively new to PowerShell, so make sure you have at least PowerShell 7.2 LTS installed. The syntax of the ternary operator is like this:
+
+```
+x = <boolean expression> ? <return if true> : <return if false>
+```
+
+If the boolean expression evaluates to true, the value after the '?' is stored in *x*, otherwise, the value after ':' gets stored in *x*. These are quite a useful tool to add to your arsenal, so I definitely recommend getting used to their syntax.
+
 ## Overloading
 
 Alright, now let's see if it makes the scripting engine happy. At the time of this writing, I encountered an occasional bug where the scripting engine doesn't appear to recognize that *EndIP* is an *IPAddress* and not a *string*. to get around this, I cast *EndIP* to an *IPAddress* and that seems to have silenced the bug:
@@ -419,13 +427,7 @@ if($i -eq $end.Octets[0]){
 }
 ```
 
-That gets really messy having to do this in 3 nested loops. Thankfully, if you installed PowerShell 7.2 like I advised at the beginning of the lesson, we can use the *ternary operator* to simplify the logic a bit. The ternary operator works great for cases like this where you need to assign a different value depending on whether a conditional statement is true or false. This is their syntax:
-
-```
-x = <boolean statement> ? <value if true> : <value if false>
-```
-
-So, we can easily translate the previous if/else statements into this:
+That gets really messy having to do this in 3 nested loops. Thankfully, if you installed PowerShell 7.2 like I advised at the beginning of the lesson, we can use the *ternary operator* to simplify the logic a bit. So, we can easily translate the previous if/else statements into this:
 
 ```
 $jStart = $i -eq $start.Octets[0] ? $start.Octets[1] : 0
