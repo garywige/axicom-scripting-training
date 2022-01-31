@@ -120,6 +120,12 @@ class MyClass {
         $this.var2 = 0
     }
 
+    # another constructor (not default because it takes parameters)
+    MyClass($one, $two){
+        $this.var1 = $one
+        $this.var2 = $two
+    }
+
     # method
     myMethod(){
         Write-Host "Hello, World!"
@@ -133,9 +139,9 @@ Above, we have a **class** named *MyClass* that has 2 member variables named *va
 $myInstance = [MyClass]::new()
 ```
 
-Notice that we didn't provide any parameters to **new**. That's only because our constructor doesn't take any parameters. If our constructor takes parameters, we must specify the parameters in the parameter block of the **new** method.
+Notice that we didn't provide any parameters to **new**. That's only because our constructor doesn't take any parameters. Below our default constructor is one that takes parameters, and we must specify the parameters in the parameter block of the **new** method if we wish to use this one instead.
 
-Below our constructor, you see a **method**. A method is basically just a function that is a member of a class. You have been calling methods in previous lessons already, so you should be partially familiar with how to use them. For example, the **GetType** method was used in last lesson to verify that we were working with FileInfo. **GetType** is one method that all .NET classes inherit, along with **ToString**. The latter, you can customize to suit your needs. Customizing an inherited method is called **overriding** and we will be doing some of that in this lesson.
+Below our constructors, you see a **method**. A method is basically just a function that is a member of a class. You have been calling methods in previous lessons already, so you should be partially familiar with how to use them. For example, the **GetType** method was used in last lesson to verify that we were working with FileInfo. **GetType** is one method that all .NET classes inherit, along with **ToString**. The latter, you can customize to suit your needs. Customizing an inherited method is called **overriding** and we will be doing some of that in this lesson.
 
 ## IPAddress Class
 
@@ -153,6 +159,12 @@ class IPAddress {
         }
     }
 
+    IPAddress([Byte[]]$ip){
+        for($i = 0; $i -lt 4; $i++){
+            $this.Octets[$i] = $ip[$i]
+        }
+    }
+
     [string]ToString(){
         return ("{0}.{1}.{2}.{3}" -f $this.Octets[0], $this.Octets[1], $this.Octets[2], $this.Octets[3])
     }
@@ -163,13 +175,13 @@ We're going to add a lot more features to our new class as we go along. Here, ou
 
 It hasn't been discussed yet, so we'll take a paragraph to explain how to instantiate an array. An array is specified by using the brackets after the name of the type, like `[int[]]` or `[string[]]`. On the right-hand side, we are calling **new** and passing in a parameter that says how many objects will be in our array. In this instance, we need 4 Byte objects to represent an IP address, so we enter 4 in the parameter list. In this instance, we know how many objects we need. But, sometimes you have no idea how many there will be and you'll be passing in a variable instead. 
 
-We could have saved the initialization part (`... = [Byte[]]::new(4)`) for the constructor instead of initializing it outside of the constructor. Either way works, but always remember to initialize it. A good habit to develop is to implement initialization of your properties as soon as they are added to your class, unless you have a very good reason to leave them null. Notice that by the time our constructor is done, all 4 octets in the array are instantiated with their final values, leaving no room for error later on. 
+We could have saved the initialization part (`... = [Byte[]]::new(4)`) for the constructor instead of initializing it outside of the constructor. Either way works, but always remember to initialize it. A good habit to develop is to implement initialization of your properties as soon as they are added to your class, unless you have a very good reason to leave them null. Notice that by the time either of our constructors is done, all 4 octets in the array are instantiated with their final values, leaving no room for error later on. 
 
-Let's focus our attention on what this constructor is doing now. We are taking a string *str* as a parameter here so that we can easily convert from string to IPAddress after validation. The `[string]` type has a *Split* method that we utilize here. The split method takes a single character as a parameter, which it uses to split up the string into an array of strings. Each '.' in our IP address string will mark where the string gets split at, so we should end up with 4 string representations of numbers. We iterate through the array and cast each string into its final form, storing it in the *Octets* array. Note that this constructor doesn't do any validation. It trusts 100% that the data being passed into it has already been validated. That is important to keep in mind when using this class because it means we need to implement validation outside of the constructor. Notice that we are using the **this** keyword to reference the *Octets* array. In PowerShell, you must use the **this** keyword to reference the class members in the constructors as well as the methods.
+Let's focus our attention on what the top constructor is doing now. We are taking a string *str* as a parameter here so that we can easily convert from string to IPAddress after validation. The `[string]` type has a *Split* method that we utilize here. The split method takes a single character as a parameter, which it uses to split up the string into an array of strings. Each '.' in our IP address string will mark where the string gets split at, so we should end up with 4 string representations of numbers. We iterate through the array and cast each string into its final form, storing it in the *Octets* array. Note that this constructor doesn't do any validation. It trusts 100% that the data being passed into it has already been validated. That is important to keep in mind when using this class because it means we need to implement validation outside of the constructor. Notice that we are using the **this** keyword to reference the *Octets* array. In PowerShell, you must use the **this** keyword to reference the class members in the constructors as well as the methods.
 
 ## Static Methods
 
-Now, let's add some validation logic to the class. This particular method is going to take a string as a parameter and then it's going to spit out a Boolean value telling us whether its a valid format for an IP address. Since it doesn't need to interact with any class members, but it is certainly related to the `[IPAddress]` type that we're creating, we're going to make it a **static method**. Static methods are like utility functions related to a particular type. Underneath the constructor, put this in:
+Now, let's add some validation logic to the class. This particular method is going to take a string as a parameter and then it's going to spit out a Boolean value telling us whether it's a valid format for an IP address. Since it doesn't need to interact with any class members, but it is certainly related to the `[IPAddress]` type that we're creating, we're going to make it a **static method**. Static methods are like utility functions related to a particular type. Underneath the constructors, put this in:
 
 ```
 static [Boolean]isValidIP([string]$str){
@@ -181,7 +193,7 @@ static [Boolean]isValidIP([string]$str){
 
 To validate our IP address string, we need to verify that it follows a particular string pattern. If you think about, an IP address is pretty recognizable when you see one. Every IPv4 address has 3 '.' characters that are seperating numbers that can be any value between 0 and 254 inclusive. Because an IP address has such a recognizable pattern, we can use something called a **regular expression** to test whether it matches that pattern. It doesn't take care of the validation 100%, but at least it will do the hardest part for us. We can use the *split* method to do the rest after we've verified that it actually has the '.' characters the *split* method will depend on. 
 
-Regular expressions are a subject of their own and I won't be going into them in exhaustive detail. You can usually get by with a cheatsheet and some experimentation with a regex tester. I will explain how I came up with the pattern for this script. To start, open [this site](https://www.regextester.com/) up in a separate web browser tab. This can be used to test an expression on a test string. In the section below titled *Test String*, enter `1.12.123.12`. Now, in the top field, enter `\d`. You should see all of the digits highlighted. That's because `\d` matches all digits. Now, modify the top field to be `\d{3}`. You should now only see the 3rd octet highlighted. That's because the `{3}` is communicating that there are 3 consecutive digits. Now, let's make it `\d{1,3}`. All digits are highlighted now. Now we can add the dot by adding `.\` to the very end of the expression. Of course, it does not match the last octet because it is not suffixed by a dot. But, we at least have an expression that matches the first 3 sections and we are going to use this. Now, let's enclose our expression in parenthesis and specify that there are 3 instances of this expression, like so: `(\d{1,3}\.){3}`. You should see the first 3 octets highlighted along with the third dot. Now, we add `\d{1,3}` to the end of that and the whole thing should be highlighted now:
+Regular expressions are a subject of their own and I won't be going into them in exhaustive detail. You can usually get by with a cheatsheet and some experimentation with a regex tester. I will explain how I came up with the pattern for this script. To start, open [this site](https://www.regextester.com/) up in a separate web browser tab. This can be used to test an expression on a test string. In the section below titled *Test String*, enter `1.12.123.12`. Now, in the top field, enter `\d`. You should see all of the digits highlighted. That's because `\d` matches all digits. Now, modify the top field to be `\d{3}`. You should now only see the 3rd octet highlighted. That's because the `{3}` is communicating that there are 3 consecutive digits. Now, let's make it `\d{1,3}`. All digits are highlighted now. Now we can add the dot by adding `\.` to the very end of the expression. Of course, it does not match the last octet because it is not suffixed by a dot. But, we at least have an expression that matches the first 3 sections and we are going to use this. Now, let's enclose our expression in parenthesis and specify that there are 3 instances of this expression, like so: `(\d{1,3}\.){3}`. You should see the first 3 octets highlighted along with the third dot. Now, we add `\d{1,3}` to the end of that and the whole thing should be highlighted now:
 
 ```
 (\d{1,3}\.){3}\d{1,3}
@@ -333,18 +345,6 @@ if(!(([IPAddress]$EndIP) -gt $StartIP)){
 }
 ```
 
-In order for the cast to work though, you need a second version of your constructor that takes an *IPAddress* as a parameter:
-
-```
-IPAddress([Byte[]]$ip){
-    for($i = 0; $i -lt 4; $i++){
-        $this.Octets[$i] = $ip[$i]
-    }
-}
-```
-
-Having multiple versions of a function, method, or constructor that takes different parameters is called **overloading** and it comes in handy sometimes.
-
 ## Test Class
 
 Let's start a new class declaration under our *IPAddress* class:
@@ -376,7 +376,7 @@ static [Test[]] GenerateTests([IPAddress]$start, [IPAddress]$end) {
 }
 ```
 
-This method needs to create an array of *Test* objects for each IP address in the range. Before we can generate the tests, we need to initialize the array, which means we have to know how many tests there are going to be. Yes, there is going to be some *math* involved! Sometimes, logic like this can take some trial and error to get right. I originally came up with a faulty algorithm for this that limited the range for each octet to be within the *StartIP* and *EndIP* values. That didn't work well. If we wanted to simplify the test generation logic, we could make it really easy by choosing to only support the typical class C range where only the last octet is different. But, I wanted to be able to support larger ranges than that. The final algorithm that I came up with for generating a test count is this
+This method needs to create an array of *Test* objects for each IP address in the range. Before we can generate the tests, we need to initialize the array, which means we have to know how many tests there are going to be. Sorry, there is going to be some *math* involved! Sometimes, logic like this can take some trial and error to get right. I originally came up with a faulty algorithm for this that limited the range for each octet to be within the *StartIP* and *EndIP* values. That didn't work well. If we wanted to simplify the test generation logic, we could make it really easy by choosing to only support the typical class C range where only the last octet is different. But, I wanted to be able to support larger ranges than that. The final algorithm that I came up with for generating a test count is this
 
 ```
 # Calculate the number of tests we need
@@ -386,7 +386,24 @@ $testCount += ($end.Octets[2] - $start.Octets[2]) * 255
 $testCount += $end.Octets[3] - $start.Octets[3] + 1
 ```
 
-Okay, so now we need to populate our array with every possible IP address in this range. We do this by using nested for loops. Each loop is responsible for generating the value of one of the octets. For the last 3 octets, the start and end values will depend on whether the previous octet is at it's first or last value. Why? Because if the previous octet is not on either its first or last value, then this octet needs to iterate through all of the values between 0 and 254 inclusive. Originally, I implemented this using a couple of if/else blocks in each loop:
+Okay, so now we need to populate our array with every possible IP address in this range. We do this by using nested for loops. Each loop is responsible for generating the value of one of the octets. For the last 3 octets, the start and end values will depend on whether the previous octet is at it's first or last value. Why? Because if the previous octet is not on either its first or last value, then this octet needs to iterate through all of the values between 0 and 254 inclusive. Perhaps it would be easier to explain by showing you an example:
+
+Start IP: **192.168.1.5**
+End IP: **192.168.3.7**
+
+Starting Octets:
+1. 192
+2. 168
+3. 1
+4. 5
+
+- We start the 4rth octet loop at 5 and iterate all the way to 254. Notice that we do not stop at 7.
+- We increment the 3rd octet to 2.
+- We start the 4rth octet loop again, but this time we start at 0 and iterate all the way to 254. (192.168.2.0 is a valid IP address on networks that have less than a 24-bit subnet mask. The more you know :rainbow: )
+- We increment the 3rd octet to 3. This is our final value for this octet.
+- We start the 4rth octet loop one final time, starting at 0 and ending at 7.
+
+Originally, I implemented this using a couple of if/else blocks in each loop:
 
 ```
 if($i -eq $start.Octets[0]){
