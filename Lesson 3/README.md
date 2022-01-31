@@ -464,3 +464,5 @@ Now that your script is working correctly, it's a good idea to go through it fro
 ## Conclusion
 
 In this lesson, we put our knowledge to use by constructing a script that can actually be used for a very common IT task. My hope is that you've discovered just how easy it is to translate common tasks into reusable code. I also wish to dispel the non-sensicle attitude that you have to have every cmdlet memorized before you can use PowerShell. There are very few things that need to be committed to memory to be successful at this. The only thing you need to commit to memory is *how to find the information you don't remember*. Knowing how to use a search engine and bookmark pages is way more important than memorizing cmdlets or the parameters that they take. There are a few cmdlets that are great to remember if you can, like `Get-Member`, `Get-Help`, and `Get-Command`, simply because these cmdlets will help the future you get the information they need for their projects.
+
+When you are ready for more scripting, proceed to [Lesson 4](../Lesson%204)
