@@ -525,3 +525,7 @@ On the final line of the method, we use *Out-File* to save the *output* variable
 ```
 
 Your script is complete and you are free to run tests to confirm this is working correctly. 
+
+## Conclusion
+
+I hope you enjoyed following along with this lesson at least as much as I enjoyed writing it. Programming with classes is commonly referred to as **Object-Oriented Programming** and some programming languages like C# take it to the next level by making everything a class. In my experience, it's not always desirable to use classes, especially for small scripts, and you'd just be forcing yourself to type more lines of code that aren't really necessary. However, classes are very useful for modeling things that may have many properties and behavior that would otherwise be difficult to work with outside of a class. I encourage you to try writing your own scripts with classes so you can get the hang of this style of programming.
