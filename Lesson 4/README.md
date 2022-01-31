@@ -473,3 +473,55 @@ Don't forget to `return $tests` at the very end. With that class feature fully i
 # generate tests
 $Tests = [Test]::GenerateTests($StartIP, $EndIP) 
 ```
+
+## Test Run Method
+
+For the test implementation, we are going to use the *Test-Connection* cmdlet to send an ICMP packet to the specified IP address. Add the *Run* method to your *Test* class:
+
+```
+[void]Run(){
+    $result = Test-Connection -TargetName $this.ip.ToString() -IPv4 -Count 1 -TimeoutSeconds 1
+    $this.isSuccess = $result.Status -eq "Success"
+    Write-Host "$($this): $($this.isSuccess ? "PASS" : "FAIL")"
+}
+```
+
+As soon as this method is done executing, it will print a "PASS" or "FAIL" message to the screen so the user can get some instant feedback from the program. We can use one of the loop types you've already learned to start the tests, or I can introduce you to another cool tool. Okay, let's try out another cool tool! Here's another way you can run a **foreach** loop on an array. Juse use the *ForEach* method:
+
+```
+# start the tests
+$Tests.ForEach({
+    $_.Run()
+})
+```
+
+Remember that the *$_* variable is the *PSItem* special variable and it represents the object in the current iteration of the loop. Okay, go ahead and test your script on a small range in your LAN and you should be able to see whether devices in that range are alive.
+
+## Final Output
+
+Our script finally does something useful at this point, but we still have some final steps to do to fine tune the final output of the script. Add this static method to the *Test* class:
+
+```
+static [void]Output([Test[]]$tests, [string]$savePath){
+    printPadding "These IP addresses are alive:"
+    $output = ""
+    $passed = $tests.Where({$_.isSuccess})
+    foreach($test in $passed){
+        $output += "$test`r`n"
+    }
+
+    Write-Host $output
+    $output | Out-File -Path $savePath
+}
+```
+
+I have a couple of things I need to explain here. You can see that we are using a *Where* method to filter an array. The method uses a boolean expression to decide whether to include an element or not. We are using the *isSuccess* property of the test class for this method. Also, the '{}' inside of the parameter block indicate that we are working with a **function literal**. Function literals are useful when you need to use a function once and have no need to give it a name. In this literal, the **return** keyword is implied and this is perfectly valid syntax if there's only one line. 
+
+On the final line of the method, we use *Out-File* to save the *output* variable to *savePath*. We are using the pipe symbol '|' to send the data data of the *output* variable to the *InputObject* parameter of the *Out-File* cmdlet. Now, let's add this to the end of our script:
+
+```
+# output the result
+[Test]::Output($Tests, $OutputPath)
+```
+
+Your script is complete and you are free to run tests to confirm this is working correctly. 
