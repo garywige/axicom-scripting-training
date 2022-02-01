@@ -148,7 +148,7 @@ Below our constructors, you see a **method**. A method is basically just a funct
 Okay, let's go over **arrays** in more detail before we create our first class. An array is a group of one or more objects of a specific type. You can create an array with prepopulated data with an **array literal**:
 
 ```
-[string[]] $myArray = @("dog", "cat", "hello world", "Hola")
+[string[]] $myArray = @("dog", "cat", "hello world", "Hola amigo")
 ```
 
 You can also create an empty array with a specified number of elements:
@@ -157,7 +157,7 @@ You can also create an empty array with a specified number of elements:
 [string[]] $myArray = [string[]]::new(10)
 ```
 
-If you would like to read from or write to the elements of the array, you can do that like so:
+If you would like to read from, or write to, the elements of the array, you can do that like so:
 
 ```
 $myArray[3] = "my name is Billy"
@@ -174,7 +174,7 @@ for($i = 0; $i -lt $myArray.Count; $i++){
 
 ## IPAddress Class
 
-Alright, so now that you know the basics of classes, go ahead and type this in in our `# classes` section:
+Alright, so now that you know the basics of classes and arrays, go ahead and type this in in our `# classes` section:
 
 ```
 # classes
@@ -202,9 +202,7 @@ class IPAddress {
 
 We're going to add a lot more features to our new class as we go along. Here, our *IPAddress* class has one single property, named *Octets* that is an array of Bytes. A byte is basically a numeric type that can store values between 0-255, which is perfect for modeling an octet. 
 
-It hasn't been discussed yet, so we'll take a paragraph to explain how to instantiate an array. An array is specified by using the brackets after the name of the type, like `[int[]]` or `[string[]]`. On the right-hand side, we are calling **new** and passing in a parameter that says how many objects will be in our array. In this instance, we need 4 Byte objects to represent an IP address, so we enter 4 in the parameter list. In this instance, we know how many objects we need. But, sometimes you have no idea how many there will be and you'll be passing in a variable instead. 
-
-We could have saved the initialization part (`... = [Byte[]]::new(4)`) for the constructor instead of initializing it outside of the constructor. Either way works, but always remember to initialize it. A good habit to develop is to implement initialization of your properties as soon as they are added to your class, unless you have a very good reason to leave them null. Notice that by the time either of our constructors is done, all 4 octets in the array are instantiated with their final values, leaving no room for error later on. 
+We could have saved the initialization of the array (`... = [Byte[]]::new(4)`) for the constructor instead of initializing it outside of the constructor. Either way works, but always remember to initialize it. A good habit to develop is to implement initialization of your properties as soon as they are added to your class, unless you have a very good reason to leave them null. Notice that by the time either of our constructors is done, all 4 octets in the array are instantiated with their final values, leaving no room for error later on. 
 
 Let's focus our attention on what the top constructor is doing now. We are taking a string *str* as a parameter here so that we can easily convert from string to IPAddress after validation. The `[string]` type has a *Split* method that we utilize here. The split method takes a single character as a parameter, which it uses to split up the string into an array of strings. Each '.' in our IP address string will mark where the string gets split at, so we should end up with 4 string representations of numbers. We iterate through the array and cast each string into its final form, storing it in the *Octets* array. Note that this constructor doesn't do any validation. It trusts 100% that the data being passed into it has already been validated. That is important to keep in mind when using this class because it means we need to implement validation outside of the constructor. Notice that we are using the **this** keyword to reference the *Octets* array. In PowerShell, you must use the **this** keyword to reference the class members in the constructors as well as the methods.
 
