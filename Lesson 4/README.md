@@ -143,6 +143,35 @@ Notice that we didn't provide any parameters to **new**. That's only because our
 
 Below our constructors, you see a **method**. A method is basically just a function that is a member of a class. You have been calling methods in previous lessons already, so you should be partially familiar with how to use them. For example, the **GetType** method was used in last lesson to verify that we were working with FileInfo. **GetType** is one method that all .NET classes inherit, along with **ToString**. The latter, you can customize to suit your needs. Customizing an inherited method is called **overriding** and we will be doing some of that in this lesson.
 
+## Arrays
+
+Okay, let's go over **arrays** in more detail before we create our first class. An array is a group of one or more objects of a specific type. You can create an array with prepopulated data with an **array literal**:
+
+```
+[string[]] $myArray = @("dog", "cat", "hello world", "Hola")
+```
+
+You can also create an empty array with a specified number of elements:
+
+```
+[string[]] $myArray = [string[]]::new(10)
+```
+
+If you would like to read from or write to the elements of the array, you can do that like so:
+
+```
+$myArray[3] = "my name is Billy"
+Write-Host $myArray[3] # "my name is Billy" is output to the console
+```
+
+Above you can see we are accessing element 3. This is the 4th element in the array since the array begins with element 0. Sometimes, you need to know how many elements exist in the array. You can get this info from the *Count* property:
+
+```
+for($i = 0; $i -lt $myArray.Count; $i++){
+    Write-Host $myArray[$i]
+}
+```
+
 ## IPAddress Class
 
 Alright, so now that you know the basics of classes, go ahead and type this in in our `# classes` section:
