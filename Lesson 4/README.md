@@ -340,7 +340,7 @@ To decide `# which one is greater`, we are using something called the *ternary o
 x = <boolean expression> ? <return if true> : <return if false>
 ```
 
-If the boolean expression evaluates to true, the value after the '?' is stored in *x*, otherwise, the value after ':' gets stored in *x*. These are quite a useful tool to add to your arsenal, so I definitely recommend getting used to their syntax.
+If the boolean expression evaluates to true, the value after the '?' is stored in *x*, otherwise, the value after ':' gets stored in *x*. This is quite a useful tool to add to your arsenal, so I definitely recommend getting used to its syntax.
 
 ## Overloading
 
@@ -405,11 +405,11 @@ Starting Octets:
 3. 1
 4. 5
 
-- We start the 4rth octet loop at 5 and iterate all the way to 254. Notice that we do not stop at 7.
+- We start the 4th octet loop at 5 and iterate all the way to 254. Notice that we do not stop at 7.
 - We increment the 3rd octet to 2.
-- We start the 4rth octet loop again, but this time we start at 0 and iterate all the way to 254. (192.168.2.0 is a valid IP address on networks that have less than a 24-bit subnet mask. The more you know :rainbow: )
+- We start the 4th octet loop again, but this time we start at 0 and iterate all the way to 254. (192.168.2.0 is a valid IP address on networks that have less than a 24-bit subnet mask. The more you know :rainbow: )
 - We increment the 3rd octet to 3. This is our final value for this octet.
-- We start the 4rth octet loop one final time, starting at 0 and ending at 7.
+- We start the 4th octet loop one final time, starting at 0 and ending at 7.
 
 Originally, I implemented this using a couple of if/else blocks in each loop:
 
